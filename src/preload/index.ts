@@ -1,8 +1,57 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { Todo } from '../shared/types'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  getTodos: (): Promise<Todo[]> => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.once('get-todos-response', (_event, todos) => {
+        resolve(todos)
+      })
+      ipcRenderer.once('get-todos-error', (_event, error) => {
+        reject(error)
+      })
+      ipcRenderer.send('get-todos')
+    })
+  },
+
+  addTodo: (todo: Omit<Todo, 'id'>): Promise<Todo[]> => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.once('add-todo-response', (_event, todos) => {
+        resolve(todos)
+      })
+      ipcRenderer.once('add-todo-error', (_event, error) => {
+        reject(error)
+      })
+      ipcRenderer.send('add-todo', todo)
+    })
+  },
+
+  updateTodo: (todo: Todo): Promise<Todo[]> => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.once('update-todo-response', (_event, todos) => {
+        resolve(todos)
+      })
+      ipcRenderer.once('update-todo-error', (_event, error) => {
+        reject(error)
+      })
+      ipcRenderer.send('update-todo', todo)
+    })
+  },
+
+  deleteTodo: (id: Todo['id']): Promise<Todo[]> => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.once('delete-todo-response', (_event, todos) => {
+        resolve(todos)
+      })
+      ipcRenderer.once('delete-todo-error', (_event, error) => {
+        reject(error)
+      })
+      ipcRenderer.send('delete-todo', id)
+    })
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

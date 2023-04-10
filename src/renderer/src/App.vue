@@ -1,9 +1,29 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import Versions from './components/Versions.vue'
+import { Todo } from '../../shared/types'
+
+const todos = ref<Todo[]>([])
+
+onMounted(async () => {
+  todos.value = await window.api.getTodos()
+})
+
+async function addTodo(): Promise<void> {
+  // const text = prompt('Enter todo text:')
+  todos.value = await window.api.addTodo({ title: 'cool guy', completed: false })
+}
+
+async function deleteTodo(todo): Promise<void> {
+  todos.value = await window.api.deleteTodo(todo.id)
+}
 </script>
 
 <template>
   <Versions></Versions>
+  <pre>{{ todos }}</pre>
+  <button @click="addTodo">add</button>
+  <button @click="deleteTodo({})">remove</button>
   <svg class="hero-logo" viewBox="0 0 900 300">
     <use xlink:href="./assets/icons.svg#electron" />
   </svg>

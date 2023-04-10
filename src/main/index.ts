@@ -1,8 +1,9 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import db from './database'
+import { Todo } from '../shared/types'
 
 function createWindow(): void {
   // Create the browser window.
@@ -63,6 +64,8 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
+  db.close()
+
   if (process.platform !== 'darwin') {
     app.quit()
   }
@@ -70,3 +73,37 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+// Define your database schema and create your tables
+// db.serialize(() => {
+//   db.run('CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT)')
+//   db.run('INSERT INTO todos (text) VALUES (?)', 'Buy groceries')
+//   db.run('INSERT INTO todos (text) VALUES (?)', 'Do laundry')
+//   db.run('INSERT INTO todos (text) VALUES (?)', 'Clean the house')
+// })
+ipcMain.on('get-todos', (event) => {
+  const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
+  event.reply('get-todos-response', todos)
+})
+
+ipcMain.on('add-todo', (event, todo: Todo) => {
+  db.prepare('INSERT INTO todos (text) VALUES (?)').run(todo.title ?? 'yhoh')
+  const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
+  event.reply('add-todo-response', todos)
+})
+
+ipcMain.on('update-todo', (event, todo: Todo) => {
+  db.prepare('UPDATE todos SET title = ?, completed = ? WHERE id = ?').run(
+    todo.title,
+    todo.completed ? 1 : 0,
+    todo.id
+  )
+  const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
+  event.reply('update-todo-response', todos)
+})
+
+ipcMain.on('delete-todo', (event, id: number) => {
+  db.prepare('DELETE FROM todos WHERE id = ?').run(id)
+  const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
+  event.reply('delete-todo-response', todos)
+})
