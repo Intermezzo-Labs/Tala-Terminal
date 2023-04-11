@@ -2,8 +2,9 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import db from './database'
-import { Todo } from '../shared/types'
+import { AppDataSource } from './utils/data-source'
+import 'reflect-metadata'
+import { SettingController } from './controllers/SettingController'
 
 function createWindow(): void {
   // Create the browser window.
@@ -64,13 +65,20 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  db.close()
+  AppDataSource.destroy()
 
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
 
+// AppDataSource.initialize()
+//   .then(() => {
+//     console.log('Data Source has been initialized!')
+//   })
+//   .catch((err) => {
+//     console.error('Error during Data Source initialization', err)
+//   })
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
@@ -81,29 +89,31 @@ app.on('window-all-closed', () => {
 //   db.run('INSERT INTO todos (text) VALUES (?)', 'Do laundry')
 //   db.run('INSERT INTO todos (text) VALUES (?)', 'Clean the house')
 // })
-ipcMain.on('get-todos', (event) => {
-  const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
-  event.reply('get-todos-response', todos)
+
+const settingsController = new SettingController()
+ipcMain.on('get-settings', async (event) => {
+  const settings = await settingsController.getAllSettings()
+  event.reply('get-settings-response', settings)
 })
 
-ipcMain.on('add-todo', (event, todo: Todo) => {
-  db.prepare('INSERT INTO todos (text) VALUES (?)').run(todo.title ?? 'yhoh')
-  const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
-  event.reply('add-todo-response', todos)
-})
+// ipcMain.on('add-todo', (event, todo: Todo) => {
+//   db.prepare('INSERT INTO todos (text) VALUES (?)').run(todo.title ?? 'yhoh')
+//   const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
+//   event.reply('add-todo-response', todos)
+// })
 
-ipcMain.on('update-todo', (event, todo: Todo) => {
-  db.prepare('UPDATE todos SET title = ?, completed = ? WHERE id = ?').run(
-    todo.title,
-    todo.completed ? 1 : 0,
-    todo.id
-  )
-  const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
-  event.reply('update-todo-response', todos)
-})
+// ipcMain.on('update-todo', (event, todo: Todo) => {
+//   db.prepare('UPDATE todos SET title = ?, completed = ? WHERE id = ?').run(
+//     todo.title,
+//     todo.completed ? 1 : 0,
+//     todo.id
+//   )
+//   const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
+//   event.reply('update-todo-response', todos)
+// })
 
-ipcMain.on('delete-todo', (event, id: number) => {
-  db.prepare('DELETE FROM todos WHERE id = ?').run(id)
-  const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
-  event.reply('delete-todo-response', todos)
-})
+// ipcMain.on('delete-todo', (event, id: number) => {
+//   db.prepare('DELETE FROM todos WHERE id = ?').run(id)
+//   const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
+//   event.reply('delete-todo-response', todos)
+// })

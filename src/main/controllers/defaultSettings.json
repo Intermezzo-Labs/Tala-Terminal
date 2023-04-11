@@ -1,0 +1,38 @@
+{
+  "companyName": {
+    "value": "",
+    "description": "The name of the company"
+  },
+  "companyAddress": {
+    "value": "",
+    "description": "The address of the company"
+  },
+  "companyPhone": {
+    "value": "",
+    "description": "The phone number of the company"
+  },
+  "taxRate": {
+    "value": "",
+    "description": "The tax rate to apply to sales"
+  },
+  "bitcoinAccount": {
+    "value": "",
+    "description": "The Bitcoin address for receiving payments"
+  },
+  "currency": {
+    "value": "",
+    "description": "The currency to use for transactions"
+  },
+  "language": {
+    "value": "",
+    "description": "The language to use for the user interface"
+  },
+  "timezone": {
+    "value": "",
+    "description": "The timezone to use for the application"
+  },
+  "receiptFooter": {
+    "value": "",
+    "description": "The footer text to include on printed receipts"
+  }
+}
