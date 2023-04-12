@@ -3,7 +3,11 @@
     <div v-for="modal in modalStore.modals" :key="modal.id" class="absolute inset-0">
       <div class="flex h-full w-full items-center justify-center">
         <div class="relative z-10">
-          <component :is="modal.component" v-bind="modal.props" />
+          <component
+            :is="modal.component"
+            v-bind="modal.props"
+            @close="modalStore.closeModal(modal.id)"
+          />
         </div>
       </div>
       <div class="bg-black/50 absolute inset-0" @click="modalStore.closeModal(modal.id)"></div>

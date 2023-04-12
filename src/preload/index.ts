@@ -50,6 +50,17 @@ const api = {
         })
         ipcRenderer.send('create-inventory-item', item)
       })
+    },
+    updateInventoryItem: (item: InventoryItem): Promise<InventoryItem | null> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('update-inventory-item-response', (_event, updatedItem) => {
+          resolve(updatedItem)
+        })
+        ipcRenderer.once('update-inventory-item-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('update-inventory-item', item)
+      })
     }
   }
   // addTodo: (todo: Omit<Todo, 'id'>): Promise<Todo[]> => {

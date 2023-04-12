@@ -1,6 +1,5 @@
 <template>
-  <div class="p-4 md:px-8 md:py-16 space-y-8">
-    <h1>Settings</h1>
+  <AppPanel title="Settings">
     <form action="" class="grid grid-cols-1 lg:grid-cols-2 gap-8" @submit.prevent="">
       <fieldset>
         <legend>Company Information</legend>
@@ -60,10 +59,11 @@
         />
       </fieldset>
     </form>
-  </div>
+  </AppPanel>
 </template>
 
 <script setup lang="ts">
+import AppPanel from '@renderer/components/AppPanel.vue'
 import InputField from '@renderer/components/InputField.vue'
 import { SettingKey } from '@shared/models'
 import { onMounted, reactive } from 'vue'
@@ -93,9 +93,6 @@ async function handleUpdateSetting(key: string): Promise<void> {
 
 <style scoped>
 fieldset {
-  @apply space-y-2 p-4 bg-slate-100 rounded-2xl;
-}
-input {
-  @apply bg-white;
+  @apply space-y-2;
 }
 </style>

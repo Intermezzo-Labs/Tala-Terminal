@@ -9,6 +9,7 @@ export interface CustomAPI {
   inventory: {
     getInventoryItems: () => Promise<InventoryItem[]>
     createInventoryItem: (item: NewInventoryItem) => Promise<InventoryItem>
+    updateInventoryItem: (item: InventoryItem) => Promise<InventoryItem | null>
   }
 }
 

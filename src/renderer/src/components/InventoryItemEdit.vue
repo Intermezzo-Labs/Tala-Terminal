@@ -1,8 +1,6 @@
-import InputField from './InputField.vue';
-
 <template>
   <div class="bg-white p-4 rounded-2xl space-y-4">
-    <h2>Create Item</h2>
+    <h2>Edit Item</h2>
     <form action="" @submit.prevent="handleSubmit">
       <fieldset class="space-y-2">
         <InputField v-model="form.name" label="Name" />
@@ -12,8 +10,8 @@ import InputField from './InputField.vue';
       </fieldset>
       <fieldset>
         <div class="space-x-2 text-right mt-4">
-          <button type="reset">Clear</button>
-          <button>Save</button>
+          <button type="button" @click="$emit('close')">Cancel</button>
+          <button>Update</button>
         </div>
       </fieldset>
     </form>
@@ -23,18 +21,24 @@ import InputField from './InputField.vue';
 <script setup lang="ts">
 import { reactive } from 'vue'
 import InputField from './InputField.vue'
-import { NewInventoryItem, InventoryItem } from '@shared/models'
+import { InventoryItem } from '@shared/models'
 
-const form: NewInventoryItem = reactive({
-  name: '',
-  description: '',
-  quantity: 0,
-  price: 0
+const emit = defineEmits(['close'])
+
+const props = defineProps({
+  item: {
+    type: Object as () => InventoryItem,
+    default: () => ({}),
+    required: true
+  }
 })
+
+const form: InventoryItem = reactive({ ...props.item })
 
 async function handleSubmit(): Promise<InventoryItem | void> {
   try {
-    await window.api.inventory.createInventoryItem({ ...form })
+    await window.api.inventory.updateInventoryItem({ ...form })
+    emit('close')
   } catch (error) {
     console.error(error)
   }

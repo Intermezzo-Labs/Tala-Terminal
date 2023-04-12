@@ -71,53 +71,49 @@ app.on('window-all-closed', () => {
   }
 })
 
-// AppDataSource.initialize()
-//   .then(() => {
-//     console.log('Data Source has been initialized!')
-//   })
-//   .catch((err) => {
-//     console.error('Error during Data Source initialization', err)
-//   })
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
 const dbController = new DatabaseController()
+
 ipcMain.on('get-settings', async (event) => {
-  const settings = await dbController.getAllSettings()
-  event.reply('get-settings-response', settings)
+  try {
+    const settings = await dbController.getAllSettings()
+    event.reply('get-settings-response', settings)
+  } catch (error) {
+    event.reply('get-settings-error', error)
+  }
 })
 ipcMain.on('update-setting', async (event, key: string, value: string) => {
-  const setting = await dbController.updateSetting(key, value)
-  event.reply('update-setting-response', setting)
+  try {
+    const setting = await dbController.updateSetting(key, value)
+    event.reply('update-setting-response', setting)
+  } catch (error) {
+    event.reply('update-setting-error', error)
+  }
 })
 
 ipcMain.on('get-inventory-items', async (event) => {
-  const items = await dbController.getAllInventoryItems()
-  event.reply('get-inventory-items-response', items)
+  try {
+    const items = await dbController.getAllInventoryItems()
+    event.reply('get-inventory-items-response', items)
+  } catch (error) {
+    event.reply('get-inventory-items-error', error)
+  }
 })
 ipcMain.on('create-inventory-item', async (event, args) => {
-  const item = await dbController.createInventoryItem(args)
-  event.reply('create-inventory-item-response', item)
+  try {
+    const item = await dbController.createInventoryItem(args)
+    event.reply('create-inventory-item-response', item)
+  } catch (error) {
+    event.reply('create-inventory-item-error', error)
+  }
 })
-
-// ipcMain.on('add-todo', (event, todo: Todo) => {
-//   db.prepare('INSERT INTO todos (text) VALUES (?)').run(todo.title ?? 'yhoh')
-//   const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
-//   event.reply('add-todo-response', todos)
-// })
-
-// ipcMain.on('update-todo', (event, todo: Todo) => {
-//   db.prepare('UPDATE todos SET title = ?, completed = ? WHERE id = ?').run(
-//     todo.title,
-//     todo.completed ? 1 : 0,
-//     todo.id
-//   )
-//   const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
-//   event.reply('update-todo-response', todos)
-// })
-
-// ipcMain.on('delete-todo', (event, id: number) => {
-//   db.prepare('DELETE FROM todos WHERE id = ?').run(id)
-//   const todos = db.prepare('SELECT * FROM todos').all() as Todo[]
-//   event.reply('delete-todo-response', todos)
-// })
+ipcMain.on('update-inventory-item', async (event, args) => {
+  try {
+    const item = await dbController.updateInventoryItem(args)
+    event.reply('update-inventory-item-response', item)
+  } catch (error) {
+    event.reply('update-inventory-item-error', error)
+  }
+})

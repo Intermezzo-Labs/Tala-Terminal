@@ -1,19 +1,49 @@
 <template>
-  <div class="p-4 md:px-8 md:py-16">
-    <div class="mb-8">
-      <h2>Inventory</h2>
-      <button type="button" @click="modalStore.openModal(InventoryCreateItem)">Create item</button>
-    </div>
-    <pre>{{ inventory }}</pre>
-  </div>
+  <AppPanel title="Inventory">
+    <template #actions
+      ><button type="button" @click="modalStore.openModal(InventoryCreateItem)">
+        Create item
+      </button></template
+    >
+    <AppTable>
+      <template #thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th></th>
+        </tr>
+      </template>
+      <template #tbody>
+        <tr v-for="item in inventory" :key="item.id">
+          <td>
+            {{ item.name }}
+          </td>
+          <td>{{ item.description }}</td>
+          <td>{{ item.price }}</td>
+          <td>{{ item.quantity }}</td>
+          <td class="text-right">
+            <button type="button" @click="modalStore.openModal(InventoryItemEdit, { item })">
+              Edit
+            </button>
+          </td>
+        </tr>
+      </template>
+    </AppTable>
+  </AppPanel>
 </template>
 
 <script setup lang="ts">
-import { useModalsStore } from '@renderer/stores/modals'
-import InventoryCreateItem from '../components/InventoryCreateItem.vue'
 import { onMounted, ref } from 'vue'
+import { useModalsStore } from '@renderer/stores/modals'
+import AppTable from '@renderer/components/AppTable.vue'
+import AppPanel from '@renderer/components/AppPanel.vue'
+import InventoryCreateItem from '@renderer/components/InventoryCreateItem.vue'
+import InventoryItemEdit from '@renderer/components/InventoryItemEdit.vue'
+import { InventoryItem } from '@shared/models'
 
-const inventory = ref()
+const inventory = ref<InventoryItem[]>()
 
 onMounted(async () => {
   inventory.value = await window.api.inventory.getInventoryItems()

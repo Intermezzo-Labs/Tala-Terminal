@@ -5,7 +5,7 @@ interface State {
   modals: {
     id: string
     component: Component
-    props?: Record<string, any>
+    props?: Record<string, unknown>
   }[]
 }
 
@@ -18,7 +18,7 @@ export const useModalsStore = defineStore({
     hasModals: (state) => state.modals.length > 0
   },
   actions: {
-    openModal(component: Component, props?: Record<string, any>) {
+    openModal(component: Component, props?: Record<string, unknown>) {
       this.modals.push({
         id: Math.random().toString(),
         component: markRaw(component),

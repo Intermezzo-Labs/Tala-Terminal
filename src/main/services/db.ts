@@ -13,6 +13,10 @@ export class DatabaseService {
   async createInventoryItem(item: NewInventoryItem): Promise<InventoryItem> {
     return this.inventoryItemRepository.save(item)
   }
+  async updateInventoryItem({ id, ...rest }: InventoryItem): Promise<InventoryItem | null> {
+    await this.inventoryItemRepository.update({ id }, rest)
+    return this.inventoryItemRepository.findOneBy({ id })
+  }
 
   async getAllSettings(): Promise<Setting[]> {
     return this.settingsRepository.find()
