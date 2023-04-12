@@ -1,24 +1,32 @@
-import { Setting, SettingKey } from '../../shared/models'
-import { SettingService } from '../services/SettingService'
+import { InventoryItem, NewInventoryItem, Setting, SettingKey } from '../../shared/models'
+import { DatabaseService } from '../services/db'
 import defaultSettings from './defaultSettings.json'
 
-export class SettingController {
-  private settingService = new SettingService()
+export class DatabaseController {
+  private service = new DatabaseService()
+
+  async getAllInventoryItems(): Promise<InventoryItem[]> {
+    return await this.service.getAllInventoryItems()
+  }
+  async createInventoryItem(item: NewInventoryItem): Promise<InventoryItem> {
+    console.log('here?')
+    return await this.service.createInventoryItem(item)
+  }
 
   async getAllSettings(): Promise<Setting[]> {
-    return await this.settingService.getAllSettings()
+    return await this.service.getAllSettings()
   }
 
   async getSettingByKey(key: Setting['key']): Promise<Setting | null> {
-    return await this.settingService.getSettingByKey(key)
+    return await this.service.getSettingByKey(key)
   }
 
   private async createSetting(setting: Setting): Promise<Setting> {
-    return await this.settingService.createSetting(setting)
+    return await this.service.createSetting(setting)
   }
 
   async updateSetting(key: string, value?: string): Promise<Setting | null> {
-    return await this.settingService.updateSetting(key as SettingKey, { value })
+    return await this.service.updateSetting(key as SettingKey, { value })
   }
 
   async initializeSettings(): Promise<void> {

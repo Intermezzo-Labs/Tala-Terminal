@@ -8,7 +8,12 @@ const routes: readonly RouteRecordRaw[] = [
     redirect: RouteName.Order
   },
   {
-    path: '/menu',
+    path: '/inventory',
+    name: RouteName.Inventory,
+    component: () => import('../views/ViewInventory.vue')
+  },
+  {
+    path: '/order',
     name: RouteName.Order,
     component: () => import('../views/ViewOrder.vue')
   },

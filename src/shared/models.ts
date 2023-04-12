@@ -27,12 +27,14 @@ export interface Customer {
   phone: string
 }
 
-export interface InventoryItem {
-  id: string
+export interface NewInventoryItem {
   name: string
   description: string
   price: number
   quantity: number
+}
+export interface InventoryItem extends NewInventoryItem {
+  id: string
 }
 
 export interface OrderItem {

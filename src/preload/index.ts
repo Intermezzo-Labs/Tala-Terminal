@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { Setting } from '../shared/models'
+import { Setting, InventoryItem, NewInventoryItem } from '../shared/models'
 
 // Custom APIs for renderer
 const api = {
@@ -28,8 +28,8 @@ const api = {
       })
     }
   },
-  invetoryItems: {
-    getInventoryItems: (): Promise<Setting[]> => {
+  inventory: {
+    getInventoryItems: (): Promise<InventoryItem[]> => {
       return new Promise((resolve, reject) => {
         ipcRenderer.once('get-inventory-items-response', (_event, items) => {
           resolve(items)
@@ -38,6 +38,17 @@ const api = {
           reject(error)
         })
         ipcRenderer.send('get-inventory-items')
+      })
+    },
+    createInventoryItem: (item: NewInventoryItem): Promise<InventoryItem> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('create-inventory-item-response', (_event, createdItem) => {
+          resolve(createdItem)
+        })
+        ipcRenderer.once('create-inventory-item-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('create-inventory-item', item)
       })
     }
   }

@@ -32,7 +32,7 @@ defineProps({
     default: ''
   },
   modelValue: {
-    type: String
+    type: [String, Number]
   }
 })
 defineEmits(['update:modelValue'])

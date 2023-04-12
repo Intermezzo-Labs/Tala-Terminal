@@ -34,7 +34,7 @@
     <button class="inline lg:hidden" type="button" @click="openNav = !openNav">
       <span class="relative z-40">{{ openNav ? 'Close' : 'Open' }}</span>
     </button>
-    <AppVersions />
+    <AppVersions class="hidden lg:block" />
   </header>
 </template>
 
@@ -55,7 +55,11 @@ const navItems: INavItem[] = [
     routeName: RouteName.Home
   },
   {
-    text: 'Menu',
+    text: 'Inventory',
+    routeName: RouteName.Inventory
+  },
+  {
+    text: 'Order',
     routeName: RouteName.Order
   },
   {

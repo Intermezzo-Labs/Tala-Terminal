@@ -3,9 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { AppDataSource } from './utils/data-source'
-import 'reflect-metadata'
-import { SettingController } from './controllers/SettingController'
-import { InventoryController } from './controllers/InventoryController'
+import { DatabaseController } from './controllers/db'
 
 function createWindow(): void {
   // Create the browser window.
@@ -83,20 +81,23 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-const settingsController = new SettingController()
+const dbController = new DatabaseController()
 ipcMain.on('get-settings', async (event) => {
-  const settings = await settingsController.getAllSettings()
+  const settings = await dbController.getAllSettings()
   event.reply('get-settings-response', settings)
 })
 ipcMain.on('update-setting', async (event, key: string, value: string) => {
-  const setting = await settingsController.updateSetting(key, value)
+  const setting = await dbController.updateSetting(key, value)
   event.reply('update-setting-response', setting)
 })
 
-const inventoryController = new InventoryController()
 ipcMain.on('get-inventory-items', async (event) => {
-  const items = await inventoryController.getAllInventoryItems()
+  const items = await dbController.getAllInventoryItems()
   event.reply('get-inventory-items-response', items)
+})
+ipcMain.on('create-inventory-item', async (event, args) => {
+  const item = await dbController.createInventoryItem(args)
+  event.reply('create-inventory-item-response', item)
 })
 
 // ipcMain.on('add-todo', (event, todo: Todo) => {

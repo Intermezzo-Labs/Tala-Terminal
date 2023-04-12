@@ -1,5 +1,5 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { InventoryItem, Setting } from 'src/shared/models'
+import { InventoryItem, NewInventoryItem, Setting } from 'src/shared/models'
 
 export interface CustomAPI {
   settings: {
@@ -8,6 +8,7 @@ export interface CustomAPI {
   }
   inventory: {
     getInventoryItems: () => Promise<InventoryItem[]>
+    createInventoryItem: (item: NewInventoryItem) => Promise<InventoryItem>
   }
 }
 

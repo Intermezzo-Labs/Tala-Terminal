@@ -1,9 +1,18 @@
 import { AppDataSource } from '../utils/data-source'
-import { SettingSchema } from '../entities'
-import { Setting } from '../../shared/models'
+import { InventoryItemSchema, SettingSchema } from '../entities'
+import { InventoryItem, NewInventoryItem, Setting } from '../../shared/models'
 
-export class SettingService {
+export class DatabaseService {
+  private inventoryItemRepository = AppDataSource.getRepository(InventoryItemSchema)
   private settingsRepository = AppDataSource.getRepository(SettingSchema)
+
+  async getAllInventoryItems(): Promise<InventoryItem[]> {
+    return this.inventoryItemRepository.find()
+  }
+
+  async createInventoryItem(item: NewInventoryItem): Promise<InventoryItem> {
+    return this.inventoryItemRepository.save(item)
+  }
 
   async getAllSettings(): Promise<Setting[]> {
     return this.settingsRepository.find()

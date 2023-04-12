@@ -9,7 +9,7 @@ import {
   OrderSchema,
   InventoryItemSchema
 } from '../entities'
-import { SettingController } from '../controllers/SettingController'
+import { DatabaseController } from '../controllers/db'
 
 // Get the app data directory
 const appDataPath = app.getPath('userData')
@@ -35,8 +35,8 @@ export const AppDataSource = new DataSource({
 
 AppDataSource.initialize()
   .then(async () => {
-    const settingController = new SettingController()
-    await settingController.initializeSettings()
+    const dbController = new DatabaseController()
+    await dbController.initializeSettings()
     console.log('Data Source has been initialized!')
   })
   .catch((err) => {
