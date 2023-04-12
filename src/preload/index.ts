@@ -15,6 +15,30 @@ const api = {
         })
         ipcRenderer.send('get-settings')
       })
+    },
+    updateSetting: (key: string, value: string): Promise<Setting[]> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('update-setting-response', (_event, setting) => {
+          resolve(setting)
+        })
+        ipcRenderer.once('update-setting-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('update-setting', key, value)
+      })
+    }
+  },
+  invetoryItems: {
+    getInventoryItems: (): Promise<Setting[]> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('get-inventory-items-response', (_event, items) => {
+          resolve(items)
+        })
+        ipcRenderer.once('get-inventory-items-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('get-inventory-items')
+      })
     }
   }
   // addTodo: (todo: Omit<Todo, 'id'>): Promise<Todo[]> => {

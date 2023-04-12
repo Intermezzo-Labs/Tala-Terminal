@@ -1,39 +1,3 @@
-export interface Checkout {
-  id: string
-  amount: number
-  datetime: Date
-  customerId: string // foreign key to Customer entity
-}
-
-export interface Customer {
-  id: string
-  name: string
-  email: string
-  phone: string
-}
-
-export interface InventoryItem {
-  id: string
-  name: string
-  description: string
-  price: number
-}
-
-export interface Order {
-  id: string
-  datetime: Date
-  customerId: string // foreign key to Customer entity
-  checkoutId: string // foreign key to Checkout entity
-}
-
-export interface OrderItem {
-  id: string
-  quantity: number
-  price: number
-  orderId: string // foreign key to Order entity
-  inventoryItemId: string // foreign key to InventoryItem entity
-}
-
 export enum SettingKey {
   // Company Information
   COMPANY_NAME = 'companyName',
@@ -55,4 +19,45 @@ export interface Setting {
   key: SettingKey
   value?: string
   description?: string
+}
+export interface Customer {
+  id: string
+  name: string
+  email: string
+  phone: string
+}
+
+export interface InventoryItem {
+  id: string
+  name: string
+  description: string
+  price: number
+  quantity: number
+}
+
+export interface OrderItem {
+  id: string
+  quantity: number
+  price: number
+  order: Order
+  inventoryItem: InventoryItem
+}
+export interface Order {
+  id: string
+  datetime: Date
+  items: OrderItem[]
+}
+
+export enum CheckoutMethod {
+  CASH = 'cash',
+  BITCOIN = 'bitcoin'
+}
+
+export interface Checkout {
+  id: string
+  method: CheckoutMethod
+  amount: number
+  datetime: Date
+  order: Order
+  customer: Customer
 }

@@ -17,8 +17,8 @@ export class SettingController {
     return await this.settingService.createSetting(setting)
   }
 
-  async updateSetting(key: SettingKey, value?: string): Promise<Setting | null> {
-    return await this.settingService.updateSetting(key, { value })
+  async updateSetting(key: string, value?: string): Promise<Setting | null> {
+    return await this.settingService.updateSetting(key as SettingKey, { value })
   }
 
   async initializeSettings(): Promise<void> {

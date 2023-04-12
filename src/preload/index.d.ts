@@ -1,16 +1,19 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { Setting } from 'src/shared/models'
+import { InventoryItem, Setting } from 'src/shared/models'
+
+export interface CustomAPI {
+  settings: {
+    getSettings: () => Promise<Setting[]>
+    updateSetting: (key: string, value: string) => Promise<Setting[]>
+  }
+  inventory: {
+    getInventoryItems: () => Promise<InventoryItem[]>
+  }
+}
 
 declare global {
   interface Window {
     electron: ElectronAPI
-    api: {
-      settings: {
-        getSettings: () => Promise<Setting[]>
-      }
-      // addTodo: (todo: Omit<Todo, 'id'>) => Promise<Todo[]>
-      // updateTodo: (todo: Todo) => Promise<Todo[]>
-      // deleteTodo: (id: Todo['id']) => Promise<Todo[]>
-    }
+    api: CustomAPI
   }
 }

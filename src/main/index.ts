@@ -5,12 +5,13 @@ import icon from '../../resources/icon.png?asset'
 import { AppDataSource } from './utils/data-source'
 import 'reflect-metadata'
 import { SettingController } from './controllers/SettingController'
+import { InventoryController } from './controllers/InventoryController'
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1280,
+    height: 720,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -82,18 +83,20 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-// Define your database schema and create your tables
-// db.serialize(() => {
-//   db.run('CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT)')
-//   db.run('INSERT INTO todos (text) VALUES (?)', 'Buy groceries')
-//   db.run('INSERT INTO todos (text) VALUES (?)', 'Do laundry')
-//   db.run('INSERT INTO todos (text) VALUES (?)', 'Clean the house')
-// })
-
 const settingsController = new SettingController()
 ipcMain.on('get-settings', async (event) => {
   const settings = await settingsController.getAllSettings()
   event.reply('get-settings-response', settings)
+})
+ipcMain.on('update-setting', async (event, key: string, value: string) => {
+  const setting = await settingsController.updateSetting(key, value)
+  event.reply('update-setting-response', setting)
+})
+
+const inventoryController = new InventoryController()
+ipcMain.on('get-inventory-items', async (event) => {
+  const items = await inventoryController.getAllInventoryItems()
+  event.reply('get-inventory-items-response', items)
 })
 
 // ipcMain.on('add-todo', (event, todo: Todo) => {

@@ -10,7 +10,6 @@ import {
   InventoryItemSchema
 } from '../entities'
 import { SettingController } from '../controllers/SettingController'
-import { SettingKey } from '../../shared/models'
 
 // Get the app data directory
 const appDataPath = app.getPath('userData')

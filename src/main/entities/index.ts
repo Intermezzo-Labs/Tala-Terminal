@@ -1,31 +1,24 @@
 import { EntitySchema } from 'typeorm'
-import {
-  Checkout,
-  Customer,
-  InventoryItem,
-  Order,
-  OrderItem,
-  Setting,
-  SettingKey
-} from '../../shared/models'
+import { Checkout, Customer, InventoryItem, Order, OrderItem, Setting } from '../../shared/models'
 
-export const CheckoutSchema = new EntitySchema<Checkout>({
-  name: 'checkout',
+export const SettingSchema = new EntitySchema<Setting>({
+  name: 'setting',
   columns: {
-    id: {
-      type: 'uuid',
+    key: {
       primary: true,
-      generated: 'uuid'
+      type: 'varchar',
+      length: 255,
+      unique: true,
+      nullable: false
     },
-    amount: {
-      type: 'float'
+    value: {
+      type: 'varchar',
+      length: 255,
+      nullable: false
     },
-    datetime: {
-      type: 'datetime',
-      default: (): Date => 'CURRENT_TIMESTAMP' as unknown as Date
-    },
-    customerId: {
-      type: 'uuid'
+    description: {
+      type: 'text',
+      nullable: true
     }
   }
 })
@@ -59,13 +52,47 @@ export const InventoryItemSchema = new EntitySchema<InventoryItem>({
       generated: 'uuid'
     },
     name: {
-      type: 'varchar'
+      type: 'varchar',
+      nullable: false
     },
     description: {
       type: 'text'
     },
     price: {
       type: 'float'
+    },
+    quantity: {
+      type: 'int'
+    }
+  }
+})
+
+export const OrderItemSchema = new EntitySchema<OrderItem>({
+  name: 'orderItem',
+  columns: {
+    id: {
+      type: 'uuid',
+      primary: true,
+      generated: 'uuid'
+    },
+    quantity: {
+      type: 'int',
+      nullable: false
+    },
+    price: {
+      type: 'int'
+    }
+  },
+  relations: {
+    inventoryItem: {
+      type: 'many-to-one',
+      target: 'inventoryItem',
+      joinColumn: { name: 'inventoryItemId' }
+    },
+    order: {
+      type: 'many-to-one',
+      target: 'order',
+      joinColumn: { name: 'orderId' }
     }
   }
 })
@@ -81,57 +108,48 @@ export const OrderSchema = new EntitySchema<Order>({
     datetime: {
       type: 'datetime',
       default: (): Date => 'CURRENT_TIMESTAMP' as unknown as Date
-    },
-    customerId: {
-      type: 'uuid'
-    },
-    checkoutId: {
-      type: 'uuid'
+    }
+  },
+  relations: {
+    items: {
+      type: 'one-to-many',
+      target: 'orderItem',
+      inverseSide: 'order',
+      cascade: ['insert']
     }
   }
 })
 
-export const OrderItemSchema = new EntitySchema<OrderItem>({
-  name: 'orderItem',
+export const CheckoutSchema = new EntitySchema<Checkout>({
+  name: 'checkout',
   columns: {
     id: {
       type: 'uuid',
       primary: true,
       generated: 'uuid'
     },
-    quantity: {
-      type: 'int'
+    amount: {
+      type: 'float'
     },
-    price: {
-      type: 'int'
+    datetime: {
+      type: 'datetime',
+      default: (): Date => 'CURRENT_TIMESTAMP' as unknown as Date
     },
-    inventoryItemId: {
-      type: 'uuid'
-    },
-    orderId: {
-      type: 'uuid'
+    method: {
+      type: 'varchar',
+      nullable: false
     }
-  }
-})
-
-export const SettingSchema = new EntitySchema<Setting>({
-  name: 'Setting',
-  columns: {
-    key: {
-      primary: true,
-      type: 'varchar',
-      length: 255,
-      unique: true,
-      nullable: false
+  },
+  relations: {
+    customer: {
+      type: 'many-to-one',
+      target: 'customer',
+      joinColumn: { name: 'customerId' }
     },
-    value: {
-      type: 'varchar',
-      length: 255,
-      nullable: false
-    },
-    description: {
-      type: 'text',
-      nullable: true
+    order: {
+      type: 'one-to-one',
+      target: 'order',
+      joinColumn: { name: 'orderId' }
     }
   }
 })
