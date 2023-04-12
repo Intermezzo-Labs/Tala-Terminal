@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { PropType, reactive } from 'vue'
 import InputField from './InputField.vue'
 import { InventoryItem } from '@shared/models'
 
@@ -27,7 +27,7 @@ const emit = defineEmits(['close'])
 
 const props = defineProps({
   item: {
-    type: Object as () => InventoryItem,
+    type: Object as PropType<InventoryItem>,
     default: () => ({}),
     required: true
   }

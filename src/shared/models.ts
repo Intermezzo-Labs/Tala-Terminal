@@ -15,11 +15,17 @@ export enum SettingKey {
   RECEIPT_FOOTER = 'receiptFooter'
 }
 
+export enum CheckoutMethod {
+  CASH = 'cash',
+  BITCOIN = 'bitcoin'
+}
+
 export interface Setting {
   key: SettingKey
   value?: string
   description?: string
 }
+
 export interface Customer {
   id: string
   name: string
@@ -27,32 +33,23 @@ export interface Customer {
   phone: string
 }
 
-export interface NewInventoryItem {
+interface BaseItem {
+  id: string
   name: string
-  description: string
   price: number
   quantity: number
-}
-export interface InventoryItem extends NewInventoryItem {
-  id: string
 }
 
-export interface OrderItem {
-  id: string
-  quantity: number
-  price: number
-  order: Order
-  inventoryItem: InventoryItem
+export type InventoryItem = BaseItem & {
+  description: string
 }
+
+export type OrderItem = BaseItem
+
 export interface Order {
   id: string
   datetime: Date
   items: OrderItem[]
-}
-
-export enum CheckoutMethod {
-  CASH = 'cash',
-  BITCOIN = 'bitcoin'
 }
 
 export interface Checkout {
@@ -62,4 +59,14 @@ export interface Checkout {
   datetime: Date
   order: Order
   customer: Customer
+}
+
+export type CustomerInput = Partial<Omit<Customer, 'id'>>
+export type InventoryItemInput = Omit<InventoryItem, 'id'>
+export interface OrderInput {
+  items: Pick<InventoryItem, 'id' | 'quantity'>[]
+}
+export type CheckoutInput = Pick<Checkout, 'method' | 'amount'> & {
+  orderId: Order['id']
+  customerId: Customer['id']
 }

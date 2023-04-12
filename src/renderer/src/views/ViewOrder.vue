@@ -18,60 +18,80 @@
           @item-selected="selectedCategoryId = $event"
         />
       </section> -->
-      <section class="p-4 md:px-8 md:pb-16">
-        <div class="mb-8">
-          <div>
-            <!-- <h2>Select {{ selectedCategoryName }}</h2> -->
-          </div>
+      <AppPanel>
+        <template #actions>
+          <InputField label="Search" />
+        </template>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <button
+            v-for="n in 4"
+            :key="n"
+            type="button"
+            class="bg-pink-100 rounded p-4 flex flex-col h-28 justify-between"
+          >
+            <div><span class="text-xs">icon</span></div>
+            <div>
+              <h4 class="font-semibold">Title</h4>
+              <p class="text-xs text-pink-400">{{ n + 3 }} items</p>
+            </div>
+          </button>
         </div>
+        <hr class="my-4" />
         <InventoryItemsGrid
-          :items="items"
+          :items="inventoryItems"
           :loading="loadingInventoryItems"
           @item-selected="handleItemSelected"
         />
-      </section>
+      </AppPanel>
     </div>
-    <div class="md:col-span-4 px-4 py-8 md:p-0 bg-neutral-100 h-full overflow-hidden">
-      <!-- <div
-        class="h-full space-y-4 md:space-y-0 md:flex flex-col justify-between transition-all delay-200 ease-out"
-        :class="order?.items.length ? 'opacity-100' : 'md:opacity-0'"
+    <div class="md:col-span-4 bg-neutral-100 h-full overflow-hidden">
+      <AppPanel
+        title="Table 4"
+        class="h-full space-y-4 md:space-y-0 md:flex flex-col justify-between"
       >
-        <div class="md:pt-16 md:px-8 flex justify-between">
-          <h2>Order List</h2>
-          <div>
-            <button v-if="orderInput.items.length" class="link" @click="handleOrderReset">
-              Reset
-            </button>
-          </div>
-        </div>
+        <template #actions>
+          <button v-if="hasSelectedItems" class="link" @click="handleOrderReset">Clear</button>
+        </template>
 
-        <div class="flex-1 md:overflow-auto md:p-8 space-y-2 md:space-y-4" :class="$attrs.class">
-          <template v-if="order?.items.length">
-            <OrderItem
-              v-for="orderItem in order?.items"
-              :key="orderItem.details.id"
-              :item="orderItem"
-              @clicked:add-note="handleAddNote(orderItem.details.id)"
-              @clicked:quantity="handleQuantity(orderItem.details.id, $event)"
-            />
-          </template>
+        <div class="flex-1 md:overflow-auto">
+          <div v-if="hasSelectedItems" class="space-y-2">
+            <div
+              v-for="(quantity, id) in selectedItems"
+              :key="id"
+              class="bg-white rounded-2xl p-4 flex text-sm"
+            >
+              <h4 class="flex-1">
+                {{ getInventoryItemById(id as string)?.name }}
+                <span class="text-slate-400">x{{ quantity }}</span>
+              </h4>
+
+              <p>${{ (getInventoryItemById(id as string)?.price ?? 0) * quantity }}</p>
+            </div>
+          </div>
           <span v-else>No items</span>
         </div>
-        <div class="space-y-4 md:space-y-8 pb-16 md:px-8 md:py-4">
-          <OrderTotal :order="order" :loading="calculatingOrder" />
-          <div :class="order?.items.length ? 'fixed inset-4 top-auto sm:static' : ''">
-            <button
-              type="button"
-              class="btn"
-              :class="{ 'animate-pulse': creatingCharge }"
-              :disabled="order?.items.length === 0 || creatingCharge"
-              @click="handlePayment"
-            >
-              Pay with Coinbase
-            </button>
+        <div
+          class="space-y-4 md:space-y-8 transition-all delay-200 ease-in"
+          :class="hasSelectedItems ? 'opacity-100' : 'md:opacity-0'"
+        >
+          <div>
+            <dl class="text-lg font-bold grid grid-cols-2">
+              <dt><h3>Subtotal</h3></dt>
+              <dd class="text-right">$0</dd>
+              <dt><span class="text-sm font-normal">Disc</span></dt>
+              <dd class="text-right">$0</dd>
+              <dt><span class="text-sm font-normal">Tax</span></dt>
+              <dd class="text-right">$0</dd>
+              <hr class="col-span-2 my-2 border-current border" />
+              <dt><h3>Total</h3></dt>
+              <dd class="text-right">$0</dd>
+            </dl>
+          </div>
+          <div :class="hasSelectedItems ? 'fixed inset-4 top-auto sm:static' : ''">
+            <button type="button" class="btn" disabled>Place Order</button>
           </div>
         </div>
-      </div> -->
+      </AppPanel>
     </div>
   </div>
 </template>
@@ -81,19 +101,19 @@
 // import InventoryCategoriesGrid from 'components/InventoryCategoriesGrid.vue'
 import InventoryItemsGrid from 'components/InventoryItemsGrid.vue'
 import { ref, computed, reactive, onMounted } from 'vue'
-// import OrderItem from 'components/OrderItem.vue'
-// import OrderTotal from 'components/OrderTotal.vue'
 // import { useModalsStore } from '@renderer/stores/modals'
 // import CoinbaseChargeInfo from 'components/CoinbaseChargeInfo.vue'
 import { InventoryItem } from 'src/shared/models'
+import AppPanel from '@renderer/components/AppPanel.vue'
+import InputField from '@renderer/components/InputField.vue'
 
-const items = ref<InventoryItem[]>([])
+const inventoryItems = ref<InventoryItem[]>([])
 const loadingInventoryItems = ref(false)
 
 onMounted(async () => {
   try {
     loadingInventoryItems.value = true
-    items.value = await window.api.inventory.getInventoryItems()
+    inventoryItems.value = await window.api.inventory.getInventoryItems()
   } catch (error) {
     console.error(error)
   } finally {
@@ -108,43 +128,36 @@ onMounted(async () => {
 //   () => categories.value.find(({ id }) => id === selectedCategoryId.value)?.name ?? ''
 // )
 
-// const orderInput = reactive<OrderInput>({
-//   items: []
-// })
-// const { order, loading: calculatingOrder } = useCalculateOrder(orderInput)
+const selectedItems = reactive<{ [id: InventoryItem['id']]: number }>({})
+const hasSelectedItems = computed(() => Object.keys(selectedItems).length)
 
-const handleItemSelected = (itemId: InventoryItem['id']): void => {
-  const existingItem = orderInput.items?.find((item) => item.itemId === itemId)
-
-  if (existingItem) {
-    existingItem.quantity++
-  } else {
-    orderInput.items?.push({
-      itemId,
-      quantity: 1
-    })
+const handleItemSelected = (id: InventoryItem['id']): void => {
+  if (!selectedItems[id]) {
+    selectedItems[id] = 0
   }
+  selectedItems[id]++
 }
 
-// function handleOrderReset() {
-//   orderInput.items = []
-// }
+function handleOrderReset(): void {
+  Object.keys(selectedItems).forEach((id) => delete selectedItems[id])
+}
 
-// function handleAddNote(itemId: IOrderItem['details']['id']) {}
+function getInventoryItemById(id: string): InventoryItem | undefined {
+  return inventoryItems.value.find((item) => item.id === id)
+}
 
-// function handleQuantity(itemId: IOrderItem['details']['id'], quantity: number) {
-//   const existingItem = orderInput.items?.find((item) => item.itemId === itemId)
-//   if (existingItem?.quantity) {
-//     existingItem.quantity += quantity
+// function handleQuantityUpdate(id: InventoryItem['id'], quantity: 1 | -1): void {
+//   if (selectedItems[id]) {
+//     selectedItems[id] += quantity
 //   }
-//   if (existingItem?.quantity === 0) {
-//     orderInput.items = orderInput.items?.filter((orderItem) => orderItem.itemId !== itemId)
+//   if (selectedItems[id] <= 0) {
+//     delete selectedItems[id]
 //   }
 // }
 
 // const modalsStore = useModalsStore()
 // const { createCharge, loading: creatingCharge } = useCreateCharge()
-// async function handlePayment() {
+// async function handlePayment(): Promise<void> {
 //   try {
 //     const charge = await createCharge({ items: orderInput.items })
 //     if (charge) {
