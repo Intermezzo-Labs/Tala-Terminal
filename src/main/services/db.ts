@@ -1,21 +1,35 @@
 import { AppDataSource } from '../utils/data-source'
-import { InventoryItemSchema, SettingSchema } from '../entities'
-import { InventoryItem, NewInventoryItem, Setting } from '../../shared/models'
+import { InventoryCategorySchema, InventoryItemSchema, SettingSchema } from '../entities'
+import {
+  InventoryCategory,
+  InventoryCategoryInput,
+  InventoryItem,
+  InventoryItemInput,
+  Setting
+} from '../../shared/models'
 
 export class DatabaseService {
   private inventoryItemRepository = AppDataSource.getRepository(InventoryItemSchema)
+  private inventoryCategoryRepository = AppDataSource.getRepository(InventoryCategorySchema)
   private settingsRepository = AppDataSource.getRepository(SettingSchema)
 
   async getAllInventoryItems(): Promise<InventoryItem[]> {
     return this.inventoryItemRepository.find()
   }
 
-  async createInventoryItem(item: NewInventoryItem): Promise<InventoryItem> {
+  async createInventoryItem(item: InventoryItemInput): Promise<InventoryItem> {
     return this.inventoryItemRepository.save(item)
   }
   async updateInventoryItem({ id, ...rest }: InventoryItem): Promise<InventoryItem | null> {
     await this.inventoryItemRepository.update({ id }, rest)
     return this.inventoryItemRepository.findOneBy({ id })
+  }
+
+  async getAllInventoryCategories(): Promise<InventoryCategory[]> {
+    return this.inventoryCategoryRepository.find()
+  }
+  async createInventoryCategory(category: InventoryCategoryInput): Promise<InventoryCategory> {
+    return this.inventoryCategoryRepository.save(category)
   }
 
   async getAllSettings(): Promise<Setting[]> {

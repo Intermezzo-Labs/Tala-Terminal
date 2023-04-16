@@ -7,6 +7,7 @@ import {
   SettingSchema,
   OrderItemSchema,
   OrderSchema,
+  InventoryCategorySchema,
   InventoryItemSchema
 } from '../entities'
 import { DatabaseController } from '../controllers/db'
@@ -27,6 +28,7 @@ export const AppDataSource = new DataSource({
     CustomerSchema,
     OrderItemSchema,
     OrderSchema,
+    InventoryCategorySchema,
     InventoryItemSchema
   ],
   synchronize: true,

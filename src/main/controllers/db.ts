@@ -1,4 +1,11 @@
-import { InventoryItem, NewInventoryItem, Setting, SettingKey } from '../../shared/models'
+import {
+  InventoryCategory,
+  InventoryCategoryInput,
+  InventoryItem,
+  InventoryItemInput,
+  Setting,
+  SettingKey
+} from '../../shared/models'
 import { DatabaseService } from '../services/db'
 import defaultSettings from './defaultSettings.json'
 
@@ -8,11 +15,18 @@ export class DatabaseController {
   async getAllInventoryItems(): Promise<InventoryItem[]> {
     return await this.service.getAllInventoryItems()
   }
-  async createInventoryItem(item: NewInventoryItem): Promise<InventoryItem> {
+  async createInventoryItem(item: InventoryItemInput): Promise<InventoryItem> {
     return await this.service.createInventoryItem(item)
   }
   async updateInventoryItem(item: InventoryItem): Promise<InventoryItem | null> {
     return await this.service.updateInventoryItem(item)
+  }
+
+  async getAllInventoryCategories(): Promise<InventoryCategory[]> {
+    return await this.service.getAllInventoryCategories()
+  }
+  async createInventoryCategory(category: InventoryCategoryInput): Promise<InventoryCategory> {
+    return await this.service.createInventoryCategory(category)
   }
 
   async getAllSettings(): Promise<Setting[]> {

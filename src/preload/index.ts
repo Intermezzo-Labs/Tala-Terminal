@@ -1,6 +1,12 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { Setting, InventoryItem, NewInventoryItem } from '../shared/models'
+import {
+  Setting,
+  InventoryItem,
+  InventoryItemInput,
+  InventoryCategoryInput,
+  InventoryCategory
+} from '../shared/models'
 
 // Custom APIs for renderer
 const api = {
@@ -40,7 +46,7 @@ const api = {
         ipcRenderer.send('get-inventory-items')
       })
     },
-    createInventoryItem: (item: NewInventoryItem): Promise<InventoryItem> => {
+    createInventoryItem: (item: InventoryItemInput): Promise<InventoryItem> => {
       return new Promise((resolve, reject) => {
         ipcRenderer.once('create-inventory-item-response', (_event, createdItem) => {
           resolve(createdItem)
@@ -61,41 +67,30 @@ const api = {
         })
         ipcRenderer.send('update-inventory-item', item)
       })
+    },
+    getInventoryCategories: (): Promise<InventoryCategory[]> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('get-inventory-categories-response', (_event, items) => {
+          resolve(items)
+        })
+        ipcRenderer.once('get-inventory-categories-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('get-inventory-categories')
+      })
+    },
+    createInventoryCategory: (category: InventoryCategoryInput): Promise<InventoryCategory> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('create-inventory-category-response', (_event, createdCategory) => {
+          resolve(createdCategory)
+        })
+        ipcRenderer.once('create-inventory-category-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('create-inventory-category', category)
+      })
     }
   }
-  // addTodo: (todo: Omit<Todo, 'id'>): Promise<Todo[]> => {
-  //   return new Promise((resolve, reject) => {
-  //     ipcRenderer.once('add-todo-response', (_event, todos) => {
-  //       resolve(todos)
-  //     })
-  //     ipcRenderer.once('add-todo-error', (_event, error) => {
-  //       reject(error)
-  //     })
-  //     ipcRenderer.send('add-todo', todo)
-  //   })
-  // },
-  // updateTodo: (todo: Todo): Promise<Todo[]> => {
-  //   return new Promise((resolve, reject) => {
-  //     ipcRenderer.once('update-todo-response', (_event, todos) => {
-  //       resolve(todos)
-  //     })
-  //     ipcRenderer.once('update-todo-error', (_event, error) => {
-  //       reject(error)
-  //     })
-  //     ipcRenderer.send('update-todo', todo)
-  //   })
-  // },
-  // deleteTodo: (id: Todo['id']): Promise<Todo[]> => {
-  //   return new Promise((resolve, reject) => {
-  //     ipcRenderer.once('delete-todo-response', (_event, todos) => {
-  //       resolve(todos)
-  //     })
-  //     ipcRenderer.once('delete-todo-error', (_event, error) => {
-  //       reject(error)
-  //     })
-  //     ipcRenderer.send('delete-todo', id)
-  //   })
-  // }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -14,9 +14,6 @@
       @click="$emit('item-selected', item.id)"
     >
       <figure>
-        <!-- <picture class="block">
-          <img src="" alt="item" />
-        </picture> -->
         <div class="bg-orange-200 h-4 w-4 rounded-full mx-auto mb-2"></div>
       </figure>
       <h4 class="font-bold">{{ item.name }}</h4>
@@ -25,9 +22,9 @@
 </template>
 
 <script setup lang="ts">
-import { InventoryCategory } from 'interfaces/graphql.type'
 import { PropType } from 'vue'
 import LoadingScreen from './LoadingScreen.vue'
+import { InventoryCategory } from '@shared/models'
 
 const props = defineProps({
   items: {
@@ -36,7 +33,7 @@ const props = defineProps({
     required: false
   },
   selectedItemId: {
-    type: Number as PropType<InventoryCategory['id']>,
+    type: String as PropType<InventoryCategory['id']>,
     default: null,
     required: false
   },

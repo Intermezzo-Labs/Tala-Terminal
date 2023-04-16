@@ -5,7 +5,7 @@ const routes: readonly RouteRecordRaw[] = [
   {
     path: '/',
     name: RouteName.Home,
-    redirect: RouteName.Order
+    redirect: RouteName.Menu
   },
   {
     path: '/inventory',
@@ -13,14 +13,14 @@ const routes: readonly RouteRecordRaw[] = [
     component: () => import('../views/ViewInventory.vue')
   },
   {
-    path: '/order',
-    name: RouteName.Order,
-    component: () => import('../views/ViewOrder.vue')
+    path: '/menu',
+    name: RouteName.Menu,
+    component: () => import('../views/ViewMenu.vue')
   },
   {
-    path: '/history',
-    name: RouteName.History,
-    component: () => import('../views/ViewHistory.vue')
+    path: '/orders',
+    name: RouteName.Orders,
+    component: () => import('../views/ViewOrders.vue')
   },
   {
     path: '/settings',

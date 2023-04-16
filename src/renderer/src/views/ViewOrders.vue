@@ -53,11 +53,9 @@
 </template>
 
 <script setup lang="ts">
-import { useCharges } from '@/graphql'
 import { format, isToday } from 'date-fns'
-import { Timeline, Charge } from 'interfaces/graphql.type'
-import PaymentStatus from '@/components/PaymentStatus.vue'
-import LoadingScreen from '@/components/LoadingScreen.vue'
+import PaymentStatus from '@renderer/components/PaymentStatus.vue'
+import LoadingScreen from '@renderer/components/LoadingScreen.vue'
 
 const { charges, loading } = useCharges()
 

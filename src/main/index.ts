@@ -117,3 +117,19 @@ ipcMain.on('update-inventory-item', async (event, args) => {
     event.reply('update-inventory-item-error', error)
   }
 })
+ipcMain.on('get-inventory-categories', async (event) => {
+  try {
+    const categories = await dbController.getAllInventoryCategories()
+    event.reply('get-inventory-categories-response', categories)
+  } catch (error) {
+    event.reply('get-inventory-categories-error', error)
+  }
+})
+ipcMain.on('create-inventory-category', async (event, args) => {
+  try {
+    const category = await dbController.createInventoryCategory(args)
+    event.reply('create-inventory-category-response', category)
+  } catch (error) {
+    event.reply('create-inventory-category-error', error)
+  }
+})

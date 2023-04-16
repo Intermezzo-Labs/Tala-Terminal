@@ -1,7 +1,7 @@
 export enum RouteName {
   Home = 'home',
-  Order = 'order',
-  History = 'history',
+  Menu = 'menu',
+  Orders = 'orders',
   Settings = 'settings',
   Customers = 'customers',
   Inventory = 'inventory'

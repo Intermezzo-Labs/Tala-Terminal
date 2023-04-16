@@ -34,15 +34,15 @@ interface INavItem {
 const navItems: INavItem[] = [
   {
     text: 'Menu',
-    routeName: RouteName.Order
+    routeName: RouteName.Menu
+  },
+  {
+    text: 'Orders',
+    routeName: RouteName.Orders
   },
   {
     text: 'Inventory',
     routeName: RouteName.Inventory
-  },
-  {
-    text: 'History',
-    routeName: RouteName.History
   },
   {
     text: 'Settings',

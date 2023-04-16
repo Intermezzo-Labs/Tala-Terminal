@@ -1,5 +1,13 @@
 import { EntitySchema } from 'typeorm'
-import { Checkout, Customer, InventoryItem, Order, OrderItem, Setting } from '../../shared/models'
+import {
+  Checkout,
+  Customer,
+  InventoryCategory,
+  InventoryItem,
+  Order,
+  OrderItem,
+  Setting
+} from '../../shared/models'
 
 export const SettingSchema = new EntitySchema<Setting>({
   name: 'setting',
@@ -15,10 +23,6 @@ export const SettingSchema = new EntitySchema<Setting>({
       type: 'varchar',
       length: 255,
       nullable: false
-    },
-    description: {
-      type: 'text',
-      nullable: true
     }
   }
 })
@@ -64,6 +68,29 @@ export const InventoryItemSchema = new EntitySchema<InventoryItem>({
     quantity: {
       type: 'int'
     }
+  },
+  relations: {
+    categories: {
+      type: 'one-to-many',
+      target: 'inventoryCategory',
+      inverseSide: 'inventoryItem',
+      cascade: ['insert']
+    }
+  }
+})
+
+export const InventoryCategorySchema = new EntitySchema<InventoryCategory>({
+  name: 'inventoryCategory',
+  columns: {
+    id: {
+      type: 'uuid',
+      primary: true,
+      generated: 'uuid'
+    },
+    name: {
+      type: 'varchar',
+      nullable: false
+    }
   }
 })
 
@@ -75,24 +102,16 @@ export const OrderItemSchema = new EntitySchema<OrderItem>({
       primary: true,
       generated: 'uuid'
     },
+    name: {
+      type: 'varchar',
+      nullable: false
+    },
     quantity: {
       type: 'int',
       nullable: false
     },
     price: {
       type: 'int'
-    }
-  },
-  relations: {
-    inventoryItem: {
-      type: 'many-to-one',
-      target: 'inventoryItem',
-      joinColumn: { name: 'inventoryItemId' }
-    },
-    order: {
-      type: 'many-to-one',
-      target: 'order',
-      joinColumn: { name: 'orderId' }
     }
   }
 })

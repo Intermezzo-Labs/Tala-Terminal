@@ -11,6 +11,18 @@ import InputField from './InputField.vue';
         <InputField v-model="form.quantity" type="number" min="0" label="Quantity" />
       </fieldset>
       <fieldset>
+        <h5>Categories</h5>
+        <button
+          v-for="cat in categories"
+          :key="cat.id"
+          type="button"
+          :class="{ underline: isCategorySelected(cat) }"
+          @click="toggleCategory(cat)"
+        >
+          {{ cat.name }}
+        </button>
+      </fieldset>
+      <fieldset>
         <div class="space-x-2 text-right mt-4">
           <button type="reset">Clear</button>
           <button>Save</button>
@@ -21,20 +33,37 @@ import InputField from './InputField.vue';
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { onMounted, reactive, ref, toRaw } from 'vue'
 import InputField from './InputField.vue'
-import { NewInventoryItem, InventoryItem } from '@shared/models'
+import { InventoryItemInput, InventoryItem, InventoryCategory } from '@shared/models'
 
-const form: NewInventoryItem = reactive({
+const form: InventoryItemInput = reactive({
   name: '',
   description: '',
   quantity: 0,
-  price: 0
+  price: 0,
+  categories: [],
+  disabled: false
+})
+
+const categories = ref<InventoryCategory[]>()
+function isCategorySelected(category: InventoryCategory): boolean {
+  return form.categories?.includes(category) ?? false
+}
+function toggleCategory(category: InventoryCategory): void {
+  if (isCategorySelected(category)) {
+    form.categories = form.categories?.filter(({ id }) => id !== category.id)
+  } else {
+    form.categories?.push(category)
+  }
+}
+onMounted(async () => {
+  categories.value = await window.api.inventory.getInventoryCategories()
 })
 
 async function handleSubmit(): Promise<InventoryItem | void> {
   try {
-    await window.api.inventory.createInventoryItem({ ...form })
+    await window.api.inventory.createInventoryItem(toRaw(form))
   } catch (error) {
     console.error(error)
   }

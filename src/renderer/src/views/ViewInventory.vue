@@ -1,10 +1,11 @@
 <template>
   <AppPanel title="Inventory">
-    <template #actions
-      ><button type="button" @click="modalStore.openModal(InventoryCreateItem)">
-        Create item
-      </button></template
-    >
+    <template #actions>
+      <button type="button" @click="modalStore.openModal(InventoryCreateItem)">Create item</button>
+      <button type="button" @click="modalStore.openModal(InventoryCategoryCreate)">
+        Create category
+      </button>
+    </template>
     <AppTable>
       <template #thead>
         <tr>
@@ -41,6 +42,7 @@ import AppTable from '@renderer/components/AppTable.vue'
 import AppPanel from '@renderer/components/AppPanel.vue'
 import InventoryCreateItem from '@renderer/components/InventoryCreateItem.vue'
 import InventoryItemEdit from '@renderer/components/InventoryItemEdit.vue'
+import InventoryCategoryCreate from '@renderer/components/InventoryCategoryCreate.vue'
 import { InventoryItem } from '@shared/models'
 
 const inventory = ref<InventoryItem[]>()

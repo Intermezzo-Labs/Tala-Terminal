@@ -23,7 +23,6 @@ export enum CheckoutMethod {
 export interface Setting {
   key: SettingKey
   value?: string
-  description?: string
 }
 
 export interface Customer {
@@ -33,7 +32,7 @@ export interface Customer {
   phone: string
 }
 
-interface BaseItem {
+export interface BaseItem {
   id: string
   name: string
   price: number
@@ -41,7 +40,14 @@ interface BaseItem {
 }
 
 export type InventoryItem = BaseItem & {
-  description: string
+  description?: string
+  disabled?: boolean
+  categories?: InventoryCategory[]
+}
+
+export interface InventoryCategory {
+  id: string
+  name: string
 }
 
 export type OrderItem = BaseItem
@@ -63,6 +69,7 @@ export interface Checkout {
 
 export type CustomerInput = Partial<Omit<Customer, 'id'>>
 export type InventoryItemInput = Omit<InventoryItem, 'id'>
+export type InventoryCategoryInput = Omit<InventoryCategory, 'id'>
 export interface OrderInput {
   items: Pick<InventoryItem, 'id' | 'quantity'>[]
 }
