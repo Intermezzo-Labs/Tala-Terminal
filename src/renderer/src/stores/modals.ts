@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia'
 import { Component, markRaw } from 'vue'
 
+interface Modal {
+  id: string
+  component: Component
+  props?: Record<string, unknown>
+  callback?: () => void
+}
+type ModalInput = Omit<Modal, 'id'>
+
 interface State {
-  modals: {
-    id: string
-    component: Component
-    props?: Record<string, unknown>
-  }[]
+  modals: Modal[]
 }
 
 export const useModalsStore = defineStore({
@@ -18,11 +22,12 @@ export const useModalsStore = defineStore({
     hasModals: (state) => state.modals.length > 0
   },
   actions: {
-    openModal(component: Component, props?: Record<string, unknown>) {
+    openModal({ component, props, callback }: ModalInput) {
       this.modals.push({
         id: Math.random().toString(),
         component: markRaw(component),
-        props
+        props,
+        callback
       })
     },
     closeModal(id: string) {

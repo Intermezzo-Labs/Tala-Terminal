@@ -2,12 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  h2 {
-    @apply text-2xl font-bold;
-  }
-}
-
 @layer components {
   .btn {
     @apply from-blue-500 to-indigo-600 bg-gradient-to-r text-white font-bold tracking-wider;

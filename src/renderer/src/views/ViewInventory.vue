@@ -1,8 +1,18 @@
 <template>
   <AppPanel title="Inventory">
     <template #actions>
-      <button type="button" @click="modalStore.openModal(InventoryCreateItem)">Create item</button>
-      <button type="button" @click="modalStore.openModal(InventoryCategoryCreate)">
+      <button
+        type="button"
+        class="py-2 px-4 border border-current rounded-full text-sm"
+        @click="modalStore.openModal({ component: InventoryCreateItem })"
+      >
+        Create item
+      </button>
+      <button
+        type="button"
+        class="py-2 px-4 border border-current rounded-full text-sm"
+        @click="modalStore.openModal({ component: InventoryCategoryCreate })"
+      >
         Create category
       </button>
     </template>
@@ -25,10 +35,18 @@
           <td>{{ item.price }}</td>
           <td>{{ item.quantity }}</td>
           <td class="text-right">
-            <button type="button" @click="modalStore.openModal(InventoryItemEdit, { item })">
+            <button
+              type="button"
+              @click="modalStore.openModal({ component: InventoryItemEdit, props: { item } })"
+            >
               Edit
             </button>
           </td>
+        </tr>
+      </template>
+      <template v-if="!inventory?.length" #tfoot>
+        <tr>
+          <td colspan="5"><p class="p-4 text-center">No items</p></td>
         </tr>
       </template>
     </AppTable>

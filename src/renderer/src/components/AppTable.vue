@@ -1,14 +1,17 @@
 <template>
   <LoadingScreen v-if="loading" />
   <div class="overflow-x-auto">
-    <table class="min-w-full divide-y-2 divide-gray-200 text-sm">
-      <thead>
+    <table class="min-w-full divide-focus-state text-sm">
+      <thead class="border-b">
         <slot name="thead"></slot>
       </thead>
 
-      <tbody class="divide-y divide-gray-200">
+      <tbody v-if="$slots.tbody" class="divide-y divide-focus-state">
         <slot name="tbody"></slot>
       </tbody>
+      <tfoot>
+        <slot name="tfoot"></slot>
+      </tfoot>
     </table>
   </div>
 </template>
@@ -24,9 +27,9 @@ defineProps({
 </script>
 <style scoped>
 :deep(th) {
-  @apply px-4 py-2 text-left font-medium text-gray-900;
+  @apply px-4 py-2 text-left font-medium;
 }
 :deep(td) {
-  @apply px-4 py-2 text-gray-700;
+  @apply px-4 py-2;
 }
 </style>

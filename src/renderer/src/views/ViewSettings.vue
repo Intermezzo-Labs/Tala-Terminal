@@ -95,4 +95,7 @@ async function handleUpdateSetting(key: string): Promise<void> {
 fieldset {
   @apply space-y-2;
 }
+legend {
+  @apply text-highlight;
+}
 </style>

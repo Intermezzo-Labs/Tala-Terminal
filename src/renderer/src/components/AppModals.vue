@@ -10,7 +10,7 @@
           />
         </div>
       </div>
-      <div class="bg-black/50 absolute inset-0" @click="modalStore.closeModal(modal.id)"></div>
+      <div class="bg-base-bg/80 absolute inset-0" @click="modalStore.closeModal(modal.id)"></div>
     </div>
   </div>
 </template>

@@ -1,7 +1,7 @@
 import InputField from './InputField.vue';
 
 <template>
-  <div class="bg-white p-4 rounded-2xl space-y-4">
+  <div class="bg-base-bg border-2 border-hover-state p-4 rounded-2xl space-y-4">
     <h2>Create Category</h2>
     <form action="" @submit.prevent="handleSubmit">
       <fieldset class="space-y-2">

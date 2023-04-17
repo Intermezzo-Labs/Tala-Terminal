@@ -1,15 +1,19 @@
 <template>
-  <header class="flex lg:flex-col justify-between gap-8" :class="$attrs.class">
-    <h1 class="font-medium text-lg">Intermezzo POS</h1>
+  <header class="flex lg:flex-col justify-between w-56 p-8" :class="$attrs.class">
+    <div class="flex items-start gap-1 px-4 h-16 text-highlight">
+      <AppLogo class="h-6" />
+      <h1 class="font-semibold">Tala Terminal</h1>
+    </div>
     <nav
-      class="flex-col gap-8 items-center justify-center font-medium underline-offset-4"
-      :class="openNav ? 'flex absolute inset-0 bg-black' : 'hidden lg:flex'"
+      class="flex-1 font-medium text-sm space-y-2"
+      :class="openNav ? 'flex absolute inset-0 bg-bg-color' : 'hidden lg:block'"
     >
       <RouterLink
         v-for="item in navItems"
         :key="item.routeName"
         :to="{ name: item.routeName }"
-        active-class="underline"
+        class="block py-2 px-4 rounded"
+        active-class="bg-hover-state text-highlight"
       >
         {{ item.text }}
       </RouterLink>
@@ -17,7 +21,7 @@
     <button class="inline lg:hidden" type="button" @click="openNav = !openNav">
       <span class="relative z-40">{{ openNav ? 'Close' : 'Open' }}</span>
     </button>
-    <p class="text-xs text-slate-600">by Intermezzo Labs</p>
+    <p class="text-xs">by Intermezzo Labs</p>
   </header>
 </template>
 
@@ -25,6 +29,7 @@
 import { RouteName } from '@renderer/router/routeNames'
 import { Component, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import AppLogo from './AppLogo.vue'
 
 interface INavItem {
   text: string
