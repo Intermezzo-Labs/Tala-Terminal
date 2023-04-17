@@ -71,9 +71,20 @@ export const InventoryItemSchema = new EntitySchema<InventoryItem>({
   },
   relations: {
     categories: {
-      type: 'one-to-many',
+      type: 'many-to-many',
       target: 'inventoryCategory',
-      inverseSide: 'inventoryItem',
+      inverseSide: 'items',
+      joinTable: {
+        name: 'item_categories',
+        joinColumn: {
+          name: 'item_id',
+          referencedColumnName: 'id'
+        },
+        inverseJoinColumn: {
+          name: 'category_id',
+          referencedColumnName: 'id'
+        }
+      },
       cascade: ['insert']
     }
   }
@@ -90,6 +101,24 @@ export const InventoryCategorySchema = new EntitySchema<InventoryCategory>({
     name: {
       type: 'varchar',
       nullable: false
+    }
+  },
+  relations: {
+    items: {
+      type: 'many-to-many',
+      target: 'inventoryItem',
+      inverseSide: 'categories',
+      joinTable: {
+        name: 'item_categories',
+        joinColumn: {
+          name: 'category_id',
+          referencedColumnName: 'id'
+        },
+        inverseJoinColumn: {
+          name: 'item_id',
+          referencedColumnName: 'id'
+        }
+      }
     }
   }
 })

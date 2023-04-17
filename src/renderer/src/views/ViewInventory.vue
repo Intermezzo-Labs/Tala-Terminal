@@ -4,7 +4,9 @@
       <button
         type="button"
         class="py-2 px-4 border border-current rounded-full text-sm"
-        @click="modalStore.openModal({ component: InventoryCreateItem })"
+        @click="
+          modalStore.openModal({ component: InventoryCreateItem, callback: createItemCallback })
+        "
       >
         Create item
       </button>
@@ -65,9 +67,16 @@ import { InventoryItem } from '@shared/models'
 
 const inventory = ref<InventoryItem[]>()
 
-onMounted(async () => {
+onMounted(() => fetchItems())
+
+async function fetchItems(): Promise<void> {
   inventory.value = await window.api.inventory.getInventoryItems()
-})
+}
+
+async function createItemCallback(): Promise<void> {
+  await fetchItems()
+  modalStore.clearModals()
+}
 
 const modalStore = useModalsStore()
 </script>

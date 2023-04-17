@@ -148,6 +148,6 @@ function getInventoryItemById(id: string): InventoryItem | undefined {
 
 <style scoped>
 .quantity-btn {
-  @apply border border-focus-state h-6 w-6 rounded;
+  @apply border border-focus-state h-6 w-6 text-lg rounded;
 }
 </style>

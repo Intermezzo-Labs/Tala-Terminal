@@ -39,7 +39,7 @@ AppDataSource.initialize()
   .then(async () => {
     const dbController = new DatabaseController()
     await dbController.initializeSettings()
-    console.log('Data Source has been initialized!')
+    console.log('Data Source has been initialized!', appDataPath)
   })
   .catch((err) => {
     console.error('Error during Data Source initialization', err)

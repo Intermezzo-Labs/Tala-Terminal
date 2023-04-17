@@ -1,7 +1,7 @@
 <template>
   <div class="bg-base-bg border-2 border-hover-state p-4 rounded-2xl space-y-4 max-w-xs">
     <h2>Create Item</h2>
-    <form action="" @submit.prevent="handleSubmit">
+    <form action="" @submit.prevent="">
       <fieldset class="space-y-2">
         <InputField v-model="form.name" label="Name" />
         <InputField v-model="form.description" label="Description" />
@@ -19,11 +19,10 @@
             @click="toggleCategory(cat)"
           >
             <span
-              class="inline-flex items-center justify-center rounded-full bg-purple-100 px-2.5 py-0.5 text-purple-700"
+              class="inline-flex items-center justify-center rounded-full bg-hover-state px-2.5 py-0.5"
             >
               <p class="whitespace-nowrap text-sm">{{ cat.name }}</p>
-
-              <button
+              <!-- <button
                 class="-me-1 ms-1.5 inline-block rounded-full bg-purple-200 p-0.5 text-purple-700 transition hover:text-purple-600"
               >
                 <span class="sr-only">Remove badge</span>
@@ -38,7 +37,7 @@
                 >
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </button>
+              </button> -->
             </span>
           </button>
         </div>
@@ -46,7 +45,8 @@
       <fieldset>
         <div class="space-x-2 text-right mt-4">
           <button type="reset">Clear</button>
-          <button>Save</button>
+          <button @click="handleSubmit()">Save</button>
+          <button @click="handleSubmit(true)">Save and close</button>
         </div>
       </fieldset>
     </form>
@@ -58,7 +58,13 @@ import { onMounted, reactive, ref, toRaw } from 'vue'
 import InputField from './InputField.vue'
 import { InventoryItemInput, InventoryItem, InventoryCategory } from '@shared/models'
 
-const emit = defineEmits(['close'])
+const props = defineProps({
+  callback: {
+    type: Function,
+    default: () => {}
+  }
+})
+
 const form: InventoryItemInput = reactive({
   name: '',
   description: '',
@@ -83,10 +89,18 @@ onMounted(async () => {
   categories.value = await window.api.inventory.getInventoryCategories()
 })
 
-async function handleSubmit(): Promise<InventoryItem | void> {
+async function handleSubmit(close = false): Promise<InventoryItem | void> {
   try {
     await window.api.inventory.createInventoryItem(toRaw(form))
-    emit('close')
+    if (close) {
+      props.callback()
+    } else {
+      form.name = ''
+      form.description = ''
+      form.price = 0
+      form.quantity = 0
+      form.categories = []
+    }
   } catch (error) {
     console.error(error)
   }

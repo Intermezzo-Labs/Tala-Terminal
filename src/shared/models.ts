@@ -48,6 +48,7 @@ export type InventoryItem = BaseItem & {
 export interface InventoryCategory {
   id: string
   name: string
+  items?: InventoryItem[]
 }
 
 export type OrderItem = BaseItem

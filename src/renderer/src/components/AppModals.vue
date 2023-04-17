@@ -6,6 +6,7 @@
           <component
             :is="modal.component"
             v-bind="modal.props"
+            :callback="modal.callback"
             @close="modalStore.closeModal(modal.id)"
           />
         </div>
