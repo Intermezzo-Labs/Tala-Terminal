@@ -68,6 +68,17 @@ const api = {
         ipcRenderer.send('update-inventory-item', item)
       })
     },
+    deleteInventoryItem: (id: InventoryItem['id']): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('delete-inventory-item-response', () => {
+          resolve()
+        })
+        ipcRenderer.once('delete-inventory-item-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('delete-inventory-item', id)
+      })
+    },
     getInventoryCategories: (): Promise<InventoryCategory[]> => {
       return new Promise((resolve, reject) => {
         ipcRenderer.once('get-inventory-categories-response', (_event, items) => {
@@ -88,6 +99,28 @@ const api = {
           reject(error)
         })
         ipcRenderer.send('create-inventory-category', category)
+      })
+    },
+    updateInventoryCategory: (category: InventoryCategory): Promise<InventoryCategory | null> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('update-inventory-category-response', (_event, updatedCategory) => {
+          resolve(updatedCategory)
+        })
+        ipcRenderer.once('update-inventory-category-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('update-inventory-category', category)
+      })
+    },
+    deleteInventoryCategory: (id: InventoryCategory['id']): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('delete-inventory-category-response', () => {
+          resolve()
+        })
+        ipcRenderer.once('delete-inventory-category-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('delete-inventory-category', id)
       })
     }
   }

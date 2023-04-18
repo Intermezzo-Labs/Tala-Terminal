@@ -67,6 +67,9 @@ export const InventoryItemSchema = new EntitySchema<InventoryItem>({
     },
     quantity: {
       type: 'int'
+    },
+    disabled: {
+      type: 'boolean'
     }
   },
   relations: {

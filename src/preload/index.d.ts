@@ -6,6 +6,7 @@ import {
   InventoryCategory,
   InventoryCategoryInput
 } from 'src/shared/models'
+import { DatabaseService } from '../main/services/db'
 
 export interface CustomAPI {
   settings: {
@@ -16,8 +17,11 @@ export interface CustomAPI {
     getInventoryItems: () => Promise<InventoryItem[]>
     createInventoryItem: (item: InventoryItemInput) => Promise<InventoryItem>
     updateInventoryItem: (item: InventoryItem) => Promise<InventoryItem | null>
+    deleteInventoryItem: (id: InventoryItem['id']) => Promise<void>
     getInventoryCategories: () => Promise<InventoryCategory[]>
     createInventoryCategory: (item: InventoryCategoryInput) => Promise<InventoryCategory>
+    updateInventoryCategory: (item: InventoryCategory) => Promise<InventoryCategory | null>
+    deleteInventoryCategory: (id: InventoryCategory['id']) => Promise<void>
   }
 }
 

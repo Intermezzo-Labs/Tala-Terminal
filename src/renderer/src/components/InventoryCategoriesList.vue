@@ -24,7 +24,7 @@
         <td>
           {{ category.name }}
         </td>
-        <td>{{ 0 }}</td>
+        <td>{{ category.items?.length }}</td>
         <td class="text-right space-x-2">
           <button
             type="button"
@@ -34,14 +34,7 @@
           >
             Edit
           </button>
-          <button
-            type="button"
-            @click="
-              modalStore.openModal({ component: InventoryCategoryCreate, props: { category } })
-            "
-          >
-            Delete
-          </button>
+          <button type="button" @click="handleDelete(category.id)">Delete</button>
         </td>
       </tr>
     </template>
@@ -72,6 +65,10 @@ async function fetchCategories(): Promise<void> {
 async function createCallback(): Promise<void> {
   await fetchCategories()
   modalStore.clearModals()
+}
+async function handleDelete(id: InventoryCategory['id']): Promise<void> {
+  await window.api.inventory.deleteInventoryCategory(id)
+  await fetchCategories()
 }
 
 const modalStore = useModalsStore()

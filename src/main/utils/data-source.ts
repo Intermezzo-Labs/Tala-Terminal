@@ -10,7 +10,9 @@ import {
   InventoryCategorySchema,
   InventoryItemSchema
 } from '../entities'
-import { DatabaseController } from '../controllers/db'
+import { DatabaseService } from '../services/db'
+import { Setting, SettingKey } from '../../shared/models'
+import defaultSettings from './defaultSettings.json'
 
 // Get the app data directory
 const appDataPath = app.getPath('userData')
@@ -37,10 +39,26 @@ export const AppDataSource = new DataSource({
 
 AppDataSource.initialize()
   .then(async () => {
-    const dbController = new DatabaseController()
-    await dbController.initializeSettings()
+    await initializeSettings()
     console.log('Data Source has been initialized!', appDataPath)
   })
   .catch((err) => {
     console.error('Error during Data Source initialization', err)
   })
+
+async function initializeSettings(): Promise<void> {
+  const service = new DatabaseService()
+  const initialSettings: Setting[] = Object.values(SettingKey).map((key) => ({
+    key,
+    value: defaultSettings[key].value,
+    description: defaultSettings[key].description
+  }))
+
+  // Check if each setting exists, and if not, create it with the default value
+  for (const setting of initialSettings) {
+    const existingSetting = await service.getSettingByKey(setting.key)
+    if (!existingSetting) {
+      await service.createSetting(setting)
+    }
+  }
+}
