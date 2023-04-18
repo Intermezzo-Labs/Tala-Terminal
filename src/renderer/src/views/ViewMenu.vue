@@ -71,7 +71,7 @@
     <div class="md:col-span-4 h-full overflow-hidden">
       <AppPanel
         title="Table Name"
-        class="h-full space-y-4 md:space-y-0 md:flex flex-col justify-between"
+        class="h-full space-y-4 md:space-y-0 md:flex flex-col justify-between px-8"
       >
         <template #actions>
           <button v-if="hasSelectedItems" class="link" @click="handleOrderReset">Clear</button>

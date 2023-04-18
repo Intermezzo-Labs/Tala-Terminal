@@ -1,5 +1,5 @@
 <template>
-  <AppPanel title="Settings">
+  <AppPanel title="Settings" class="pr-8">
     <form action="" class="grid grid-cols-1 lg:grid-cols-2 gap-8" @submit.prevent="">
       <fieldset>
         <legend>Company Information</legend>

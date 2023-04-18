@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8">
+  <div class="py-8">
     <div v-if="title || $slots.actions" class="h-16 flex justify-between">
       <h2 v-if="title" class="font-semibold text-highlight">{{ title }}</h2>
       <div class="space-x-4">
