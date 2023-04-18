@@ -10,7 +10,7 @@ import {
 import { FindManyOptions, In } from 'typeorm'
 
 export interface GetAllInventoryCategoriesOptions {
-  withItems: boolean
+  withItems?: boolean
 }
 
 export class DatabaseService {

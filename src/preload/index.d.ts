@@ -26,7 +26,7 @@ interface CustomAPI {
     updateInventoryItem: (item: InventoryItem) => Promise<InventoryItem | null>
     deleteInventoryItem: (id: InventoryItem['id']) => Promise<void>
     getInventoryCategories: (
-      options: GetAllInventoryCategoriesOptions
+      options?: GetAllInventoryCategoriesOptions
     ) => Promise<InventoryCategory[]>
     createInventoryCategory: (item: InventoryCategoryInput) => Promise<InventoryCategory>
     updateInventoryCategory: (item: InventoryCategory) => Promise<InventoryCategory | null>

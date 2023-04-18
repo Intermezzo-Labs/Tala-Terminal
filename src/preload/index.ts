@@ -81,7 +81,7 @@ const api = {
       })
     },
     getInventoryCategories: (
-      options: GetAllInventoryCategoriesOptions
+      options?: GetAllInventoryCategoriesOptions
     ): Promise<InventoryCategory[]> => {
       return new Promise((resolve, reject) => {
         ipcRenderer.once('get-inventory-categories-response', (_event, items) => {

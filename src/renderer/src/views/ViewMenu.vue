@@ -12,7 +12,7 @@
             type="button"
             class="bg-pink-100 text-base-bg rounded p-4 flex flex-col h-28 justify-between"
           >
-            <div><span class="text-xs">icon</span></div>
+            <div><AppIcon name="pizza" class="h-6 w-6" /></div>
             <div class="text-left">
               <h4 class="font-semibold">{{ category.name }}</h4>
               <p class="text-xs text-base-text">5 items</p>
@@ -51,7 +51,7 @@
                     class="quantity-btn"
                     @click.stop="handleQuantityUpdate(item.id, -1)"
                   >
-                    -
+                    <AppIcon name="minus" class="h-4 w-4" />
                   </button>
                   <span class="inline-block w-8 text-center font-medium">{{
                     selectedItems[item.id] ?? 0
@@ -61,7 +61,7 @@
                     class="quantity-btn"
                     @click.stop="handleQuantityUpdate(item.id, 1)"
                   >
-                    +
+                    <AppIcon name="plus" class="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -118,6 +118,27 @@
             </dl>
           </div>
           <div :class="hasSelectedItems ? 'fixed inset-4 top-auto sm:static' : ''">
+            <h3 class="text-sm text-base-text">Payment Method</h3>
+            <div class="grid grid-cols-3 gap-2 pt-2 pb-4">
+              <button
+                v-for="method in paymentMethods"
+                :key="method.value"
+                type="button"
+                @click="selectedPaymentMethod = method.value"
+              >
+                <span
+                  class="border py-4 rounded flex items-center justify-center"
+                  :class="
+                    selectedPaymentMethod === method.value
+                      ? 'bg-highlight text-base-bg border-transparent'
+                      : 'border-focus-state'
+                  "
+                >
+                  <AppIcon :name="method.icon" class="h-6 w-6" />
+                </span>
+                <span class="text-sm">{{ method.text }}</span>
+              </button>
+            </div>
             <button
               type="button"
               class="bg-highlight py-2 block w-full text-center rounded-full text-base-bg font-medium"
@@ -136,6 +157,7 @@
 import { ref, computed, reactive, onMounted } from 'vue'
 import { InventoryCategory, InventoryItem } from 'src/shared/models'
 import AppPanel from 'components/AppPanel.vue'
+import AppIcon from 'components/AppIcon.vue'
 import InputField from 'components/InputField.vue'
 
 const loading = ref(false)
@@ -205,10 +227,34 @@ const preview = computed(() => {
     total: subtotal + tax
   }
 })
+
+enum PaymentMethod {
+  CASH = 'cash',
+  DEBIT_CARD = 'debit-card',
+  E_WALLET = 'e-wallet'
+}
+const paymentMethods = [
+  {
+    text: 'Cash',
+    value: PaymentMethod.CASH,
+    icon: 'cash'
+  },
+  {
+    text: 'Credit Card',
+    value: PaymentMethod.DEBIT_CARD,
+    icon: 'credit-card'
+  },
+  {
+    text: 'E-Wallet',
+    value: PaymentMethod.E_WALLET,
+    icon: 'qr-code'
+  }
+]
+const selectedPaymentMethod = ref<PaymentMethod>(PaymentMethod.E_WALLET)
 </script>
 
 <style scoped>
 .quantity-btn {
-  @apply border border-focus-state h-6 w-6 text-lg rounded;
+  @apply border border-focus-state h-6 w-6 rounded inline-flex items-center justify-center;
 }
 </style>

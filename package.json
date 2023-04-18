@@ -30,6 +30,7 @@
     "qrcode": "^1.5.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.14",
+    "vite-svg-loader": "^4.0.0",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
