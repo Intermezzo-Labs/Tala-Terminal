@@ -25,43 +25,45 @@
             v-for="item in items"
             :key="item.id"
             type="button"
-            class="rounded flex flex-col justify-between text-left p-4 pl-3 gap-2 h-36 border-l-4"
+            class="relative overflow-hidden rounded before:bg-teal-200 before:absolute before:inset-0 before:transition-transform"
             :class="
               isItemSelected(item.id)
-                ? 'bg-teal-100 text-hover-state border-transparent'
-                : 'bg-hover-state border-teal-100'
+                ? 'text-hover-state'
+                : 'bg-hover-state before:-translate-x-[98%]'
             "
             @click="handleQuantityUpdate(item.id, 1)"
           >
-            <p class="text-xs">Orders → Kitchen</p>
-            <div class="flex-1">
-              <h5
-                class="text-sm font-medium"
-                :class="{ 'text-highlight': !isItemSelected(item.id) }"
-              >
-                {{ item.name }}
-              </h5>
-              <p class="text-xs">${{ item.price }}</p>
-            </div>
-            <div class="flex justify-between gap-2 self-end">
-              <div class="inline-flex items-center">
-                <button
-                  type="button"
-                  class="quantity-btn"
-                  @click.stop="handleQuantityUpdate(item.id, -1)"
+            <div class="relative flex flex-col justify-between text-left p-4 gap-2 h-36">
+              <p class="text-xs">Orders → Kitchen</p>
+              <div class="flex-1">
+                <h5
+                  class="text-sm font-medium"
+                  :class="{ 'text-highlight': !isItemSelected(item.id) }"
                 >
-                  -
-                </button>
-                <span class="inline-block w-8 text-center font-medium">{{
-                  selectedItems[item.id] ?? 0
-                }}</span>
-                <button
-                  type="button"
-                  class="quantity-btn"
-                  @click.stop="handleQuantityUpdate(item.id, 1)"
-                >
-                  +
-                </button>
+                  {{ item.name }}
+                </h5>
+                <p class="text-xs">${{ item.price }}</p>
+              </div>
+              <div class="flex justify-between gap-2 self-end">
+                <div class="inline-flex items-center">
+                  <button
+                    type="button"
+                    class="quantity-btn"
+                    @click.stop="handleQuantityUpdate(item.id, -1)"
+                  >
+                    -
+                  </button>
+                  <span class="inline-block w-8 text-center font-medium">{{
+                    selectedItems[item.id] ?? 0
+                  }}</span>
+                  <button
+                    type="button"
+                    class="quantity-btn"
+                    @click.stop="handleQuantityUpdate(item.id, 1)"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             </div>
           </button>
