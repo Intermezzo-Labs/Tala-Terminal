@@ -9,10 +9,10 @@ import {
   OrderSchema,
   InventoryCategorySchema,
   InventoryItemSchema
-} from '../entities'
+} from './entities'
 import { DatabaseService } from '../services/db'
-import { Setting, SettingKey } from '../../shared/models'
-import defaultSettings from './defaultSettings.json'
+import { Setting, SettingKey } from '../shared/models'
+import defaultSettings from '../services/defaultSettings.json'
 
 // Get the app data directory
 const appDataPath = app.getPath('userData')
@@ -33,7 +33,7 @@ export const AppDataSource = new DataSource({
     InventoryCategorySchema,
     InventoryItemSchema
   ],
-  synchronize: true,
+  synchronize: false,
   logging: true
 })
 

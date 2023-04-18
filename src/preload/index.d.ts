@@ -6,7 +6,7 @@ import {
   InventoryCategory,
   InventoryCategoryInput
 } from 'src/shared/models'
-import { DatabaseService } from '../main/services/db'
+import { DatabaseService } from '../services/db'
 
 export interface CustomAPI {
   settings: {

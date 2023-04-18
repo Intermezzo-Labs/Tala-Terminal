@@ -1,18 +1,18 @@
-import { AppDataSource } from '../utils/data-source'
-import { InventoryCategorySchema, InventoryItemSchema, SettingSchema } from '../entities'
+import { AppDataSource } from '../db/data-source'
+import { InventoryCategorySchema, InventoryItemSchema, SettingSchema } from '../db/entities'
 import {
   InventoryCategory,
   InventoryCategoryInput,
   InventoryItem,
   InventoryItemInput,
   Setting
-} from '../../shared/models'
+} from '../shared/models'
 import { FindManyOptions, In } from 'typeorm'
 
 export class DatabaseService {
+  private settingsRepository = AppDataSource.getRepository(SettingSchema)
   private inventoryItemRepository = AppDataSource.getRepository(InventoryItemSchema)
   private inventoryCategoryRepository = AppDataSource.getRepository(InventoryCategorySchema)
-  private settingsRepository = AppDataSource.getRepository(SettingSchema)
 
   async getAllInventoryItems(): Promise<InventoryItem[]> {
     return this.inventoryItemRepository.find({ relations: ['categories'] })

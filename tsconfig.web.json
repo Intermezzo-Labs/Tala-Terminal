@@ -6,7 +6,7 @@
     "src/renderer/src/**/*.vue",
     "src/preload/*.d.ts",
     "src/shared/*"
-, "src/main/entities"  ],
+, "src/main/entities", "src/db/entities/index.ts"  ],
   "compilerOptions": {
     "composite": true,
     "baseUrl": ".",

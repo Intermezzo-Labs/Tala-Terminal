@@ -121,7 +121,8 @@ export const InventoryCategorySchema = new EntitySchema<InventoryCategory>({
           name: 'item_id',
           referencedColumnName: 'id'
         }
-      }
+      },
+      cascade: ['remove']
     }
   }
 })

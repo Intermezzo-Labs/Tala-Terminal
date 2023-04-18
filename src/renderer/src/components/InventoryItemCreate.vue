@@ -83,7 +83,7 @@ function toggleCategory(category: InventoryCategory): void {
 }
 onMounted(async () => {
   categories.value = await window.api.inventory.getInventoryCategories()
-  if (props.item) {
+  if (props.item.id) {
     form.id = props.item.id
     form.name = props.item.name
     form.description = props.item.description

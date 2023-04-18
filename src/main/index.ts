@@ -2,8 +2,8 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { AppDataSource } from './utils/data-source'
-import { DatabaseService } from './services/db'
+import { AppDataSource } from '../db/data-source'
+import { DatabaseService } from '../services/db'
 import { SettingKey } from '../shared/models'
 
 function createWindow(): void {
