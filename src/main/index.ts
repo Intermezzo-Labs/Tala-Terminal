@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { AppDataSource } from '../db/data-source'
 import { DatabaseService } from '../services/db'
+import { EventName } from '../shared/events'
 import { SettingKey } from '../shared/models'
 
 function createWindow(): void {
@@ -75,20 +76,29 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-// enum EventName {
-//   GetSettings = 'get-settings',
-//   UpdateSettings = 'update-setting',
-//   CreateInventoryItem = 'create-inventory-item',
-//   GetInventoryItems = 'get-inventory-items',
-//   UpdateInventoryItems = 'update-inventory-item',
-//   DeleteInventoryItems = 'delete-inventory-item',
-//   CreateInventoryCategory = 'create-inventory-category',
-//   GetInventoryCategories = 'get-inventory-categories',
-//   UpdateInventoryCategories = 'update-inventory-category',
-//   DeleteInventoryCategories = 'delete-inventory-category'
+const dbService = new DatabaseService()
+
+// function createIpcHandler(
+//   asyncFunction: (...args: unknown[]) => Promise<unknown>,
+//   functionName: string
+// ): (event: Electron.IpcMainEvent, ...args: unknown[]) => void {
+//   const successEvent = `${functionName}-response`
+//   const errorEvent = `${functionName}-error`
+
+//   return async (event: Electron.IpcMainEvent, args: unknown) => {
+//     try {
+//       const result = await asyncFunction(args)
+//       event.reply(successEvent, result)
+//     } catch (error) {
+//       event.reply(errorEvent, error)
+//     }
+//   }
 // }
 
-const dbService = new DatabaseService()
+// ipcMain.on(
+//   EventName.READ_INVENTORY_ITEMS,
+//   createIpcHandler(dbService.getAllInventoryItems, EventName.READ_INVENTORY_ITEMS)
+// )
 
 ipcMain.on('get-settings', async (event) => {
   try {
@@ -139,9 +149,9 @@ ipcMain.on('delete-inventory-item', async (event, args) => {
     event.reply('delete-inventory-item-error', error)
   }
 })
-ipcMain.on('get-inventory-categories', async (event) => {
+ipcMain.on('get-inventory-categories', async (event, args) => {
   try {
-    const categories = await dbService.getAllInventoryCategories()
+    const categories = await dbService.getAllInventoryCategories(args)
     event.reply('get-inventory-categories-response', categories)
   } catch (error) {
     event.reply('get-inventory-categories-error', error)

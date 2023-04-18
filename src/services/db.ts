@@ -9,6 +9,10 @@ import {
 } from '../shared/models'
 import { FindManyOptions, In } from 'typeorm'
 
+export interface GetAllInventoryCategoriesOptions {
+  withItems: boolean
+}
+
 export class DatabaseService {
   private settingsRepository = AppDataSource.getRepository(SettingSchema)
   private inventoryItemRepository = AppDataSource.getRepository(InventoryItemSchema)
@@ -37,9 +41,11 @@ export class DatabaseService {
     return
   }
 
-  async getAllInventoryCategories(withItems = false): Promise<InventoryCategory[]> {
+  async getAllInventoryCategories(
+    opt?: GetAllInventoryCategoriesOptions
+  ): Promise<InventoryCategory[]> {
     const options: FindManyOptions<InventoryCategory> | undefined = {}
-    if (withItems) {
+    if (opt?.withItems) {
       options.relations = ['items']
     }
     return this.inventoryCategoryRepository.find(options)

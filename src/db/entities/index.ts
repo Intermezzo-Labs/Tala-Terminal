@@ -88,7 +88,7 @@ export const InventoryItemSchema = new EntitySchema<InventoryItem>({
           referencedColumnName: 'id'
         }
       },
-      cascade: ['insert']
+      cascade: ['insert', 'recover']
     }
   }
 })

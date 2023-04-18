@@ -59,7 +59,7 @@ const categories = ref<InventoryCategory[]>()
 onMounted(() => fetchCategories())
 
 async function fetchCategories(): Promise<void> {
-  categories.value = await window.api.inventory.getInventoryCategories()
+  categories.value = await window.api.inventory.getInventoryCategories({ withItems: true })
 }
 
 async function createCallback(): Promise<void> {

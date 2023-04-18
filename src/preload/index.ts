@@ -7,6 +7,7 @@ import {
   InventoryCategoryInput,
   InventoryCategory
 } from '../shared/models'
+import { GetAllInventoryCategoriesOptions } from '../services/db'
 
 // Custom APIs for renderer
 const api = {
@@ -79,7 +80,9 @@ const api = {
         ipcRenderer.send('delete-inventory-item', id)
       })
     },
-    getInventoryCategories: (): Promise<InventoryCategory[]> => {
+    getInventoryCategories: (
+      options: GetAllInventoryCategoriesOptions
+    ): Promise<InventoryCategory[]> => {
       return new Promise((resolve, reject) => {
         ipcRenderer.once('get-inventory-categories-response', (_event, items) => {
           resolve(items)
@@ -87,7 +90,7 @@ const api = {
         ipcRenderer.once('get-inventory-categories-error', (_event, error) => {
           reject(error)
         })
-        ipcRenderer.send('get-inventory-categories')
+        ipcRenderer.send('get-inventory-categories', options)
       })
     },
     createInventoryCategory: (category: InventoryCategoryInput): Promise<InventoryCategory> => {

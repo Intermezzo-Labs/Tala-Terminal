@@ -6,9 +6,16 @@ import {
   InventoryCategory,
   InventoryCategoryInput
 } from 'src/shared/models'
-import { DatabaseService } from '../services/db'
+import { GetAllInventoryCategoriesOptions } from 'src/services/db'
 
-export interface CustomAPI {
+declare global {
+  interface Window {
+    electron: ElectronAPI
+    api: CustomAPI
+  }
+}
+
+interface CustomAPI {
   settings: {
     getSettings: () => Promise<Setting[]>
     updateSetting: (key: string, value: string) => Promise<Setting[]>
@@ -18,16 +25,15 @@ export interface CustomAPI {
     createInventoryItem: (item: InventoryItemInput) => Promise<InventoryItem>
     updateInventoryItem: (item: InventoryItem) => Promise<InventoryItem | null>
     deleteInventoryItem: (id: InventoryItem['id']) => Promise<void>
-    getInventoryCategories: () => Promise<InventoryCategory[]>
+    getInventoryCategories: (
+      options: GetAllInventoryCategoriesOptions
+    ) => Promise<InventoryCategory[]>
     createInventoryCategory: (item: InventoryCategoryInput) => Promise<InventoryCategory>
     updateInventoryCategory: (item: InventoryCategory) => Promise<InventoryCategory | null>
     deleteInventoryCategory: (id: InventoryCategory['id']) => Promise<void>
   }
 }
 
-declare global {
-  interface Window {
-    electron: ElectronAPI
-    api: CustomAPI
-  }
+export default {
+  CustomAPI
 }
