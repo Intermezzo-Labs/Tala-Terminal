@@ -34,7 +34,9 @@
             @click="handleQuantityUpdate(item.id, 1)"
           >
             <div class="relative flex flex-col justify-between text-left p-4 gap-2 h-36">
-              <p class="text-xs">Orders → Kitchen</p>
+              <p class="text-xs">
+                Orders <AppIcon name="arrow-right" class="h-2 mx-1 inline" /> Kitchen
+              </p>
               <div class="flex-1">
                 <h5
                   class="text-sm font-medium"
@@ -162,7 +164,7 @@ import InputField from 'components/InputField.vue'
 
 const loading = ref(false)
 
-const taxRate = ref(0)
+const taxRate = ref('0')
 const items = ref<InventoryItem[]>([])
 const selectedItems = reactive<{ [id: InventoryItem['id']]: number }>({})
 const hasSelectedItems = computed(() => Object.keys(selectedItems).length)
@@ -178,7 +180,8 @@ const categories = ref<InventoryCategory[]>([])
 onMounted(async () => {
   try {
     loading.value = true
-    taxRate.value = 7
+    const settings = await window.api.settings.getSettings()
+    taxRate.value = settings.find((s) => s.key === 'taxRate')?.value ?? ''
     items.value = await window.api.inventory.getInventoryItems()
     categories.value = await window.api.inventory.getInventoryCategories()
   } catch (error) {
@@ -220,7 +223,7 @@ const preview = computed(() => {
     res += (getInventoryItemById(id)?.price ?? 0) * quantity
     return res
   }, 0)
-  const tax = subtotal * (taxRate.value / 100)
+  const tax = subtotal * (parseFloat(taxRate.value) / 100)
   return {
     subtotal,
     tax,
