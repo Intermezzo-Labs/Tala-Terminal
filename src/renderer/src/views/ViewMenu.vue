@@ -11,18 +11,19 @@
             :key="category.id"
             type="button"
             class="bg-pink-100 text-base-bg rounded p-4 flex flex-col h-28 justify-between"
+            @click="selectedCategory = category.id"
           >
             <div><AppIcon name="pizza" class="h-6 w-6" /></div>
             <div class="text-left">
               <h4 class="font-semibold">{{ category.name }}</h4>
-              <p class="text-xs text-base-text">5 items</p>
+              <p class="text-xs text-base-text">{{ category.items?.length }} items</p>
             </div>
           </button>
         </div>
         <hr class="my-4 border-1 border-focus-state" />
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
           <button
-            v-for="item in items"
+            v-for="item in categories.find((c) => c.id === selectedCategory)?.items"
             :key="item.id"
             type="button"
             class="relative overflow-hidden rounded before:bg-teal-200 before:absolute before:inset-0 before:transition-transform"
@@ -165,7 +166,7 @@ import InputField from 'components/InputField.vue'
 const loading = ref(false)
 
 const taxRate = ref('0')
-const items = ref<InventoryItem[]>([])
+const selectedCategory = ref<InventoryCategory['id']>()
 const selectedItems = reactive<{ [id: InventoryItem['id']]: number }>({})
 const hasSelectedItems = computed(() => Object.keys(selectedItems).length)
 function isItemSelected(id: InventoryItem['id']): boolean {
@@ -182,8 +183,8 @@ onMounted(async () => {
     loading.value = true
     const settings = await window.api.settings.getSettings()
     taxRate.value = settings.find((s) => s.key === 'taxRate')?.value ?? ''
-    items.value = await window.api.inventory.getInventoryItems()
-    categories.value = await window.api.inventory.getInventoryCategories()
+    categories.value = await window.api.inventory.getInventoryCategories({ withItems: true })
+    selectedCategory.value = categories.value[0].id
   } catch (error) {
     console.error(error)
   } finally {
@@ -195,8 +196,9 @@ function handleOrderReset(): void {
   Object.keys(selectedItems).forEach((id) => delete selectedItems[id])
 }
 
+const items = computed(() => categories.value.map((c) => c.items).flat())
 function getInventoryItemById(id: string): InventoryItem | undefined {
-  return items.value.find((item) => item.id === id)
+  return items.value.find((item) => item?.id === id)
 }
 
 function handleQuantityUpdate(id: InventoryItem['id'], quantity: 1 | -1): void {
