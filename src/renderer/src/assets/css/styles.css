@@ -4,8 +4,8 @@
 
 @layer components {
   .btn {
-    @apply from-blue-500 to-indigo-600 bg-gradient-to-r text-white font-bold tracking-wider;
-    @apply py-4 px-6 w-full rounded-lg disabled:opacity-25 hover:opacity-75 transition-all;
+    @apply bg-highlight py-2 block w-full text-center rounded-full text-base-bg font-medium;
+    @apply disabled:opacity-25 hover:opacity-75 transition-all;
   }
   .link {
     @apply underline underline-offset-4 hover:opacity-50 disabled:opacity-25;

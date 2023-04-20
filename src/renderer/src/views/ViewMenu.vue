@@ -1,6 +1,10 @@
 <template>
   <div class="md:grid md:grid-cols-12 h-full">
     <div class="md:col-span-8 overflow-auto">
+      <MyProvider my-value="Hello World">
+        <div>{{ myMessage }}</div>
+        <MenuDashboard />
+      </MyProvider>
       <AppPanel class="pl-0">
         <template #actions>
           <InputField label="Search" />
@@ -144,8 +148,9 @@
             </div>
             <button
               type="button"
-              class="bg-highlight py-2 block w-full text-center rounded-full text-base-bg font-medium"
-              disabled
+              class="btn"
+              :disabled="!selectedPaymentMethod"
+              @click="handlePlaceOrder"
             >
               Place Order
             </button>
@@ -162,6 +167,8 @@ import { InventoryCategory, InventoryItem } from 'src/shared/models'
 import AppPanel from 'components/AppPanel.vue'
 import AppIcon from 'components/AppIcon.vue'
 import InputField from 'components/InputField.vue'
+import { MyProvider } from '../components/menu/menuContext'
+import MenuDashboard from '@renderer/components/menu/MenuDashboard.vue'
 
 const loading = ref(false)
 
@@ -255,7 +262,20 @@ const paymentMethods = [
     icon: 'qr-code'
   }
 ]
-const selectedPaymentMethod = ref<PaymentMethod>(PaymentMethod.E_WALLET)
+const selectedPaymentMethod = ref<PaymentMethod>()
+function handlePlaceOrder(): void {
+  switch (selectedPaymentMethod.value) {
+    case PaymentMethod.DEBIT_CARD:
+      return
+    case PaymentMethod.E_WALLET:
+      return
+    case PaymentMethod.CASH:
+    default:
+      console.log('cash payment', preview.value)
+  }
+}
+
+const myMessage = 'This is my message'
 </script>
 
 <style scoped>
