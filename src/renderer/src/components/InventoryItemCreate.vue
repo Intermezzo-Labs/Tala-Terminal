@@ -59,7 +59,7 @@ const props = defineProps({
   }
 })
 
-const form: InventoryItem = reactive({
+const form = reactive<InventoryItem>({
   id: '',
   name: '',
   description: '',
@@ -95,9 +95,9 @@ onMounted(async () => {
 
 async function handleSubmit(): Promise<InventoryItem | void> {
   try {
-    const data = toRaw(form)
-    data.id
-      ? await window.api.inventory.updateInventoryItem(data)
+    const { id, ...data } = toRaw(form)
+    id
+      ? await window.api.inventory.updateInventoryItem({ id, ...data })
       : await window.api.inventory.createInventoryItem(data)
     props.callback()
   } catch (error) {

@@ -33,7 +33,7 @@ export const AppDataSource = new DataSource({
     InventoryCategorySchema,
     InventoryItemSchema
   ],
-  synchronize: false,
+  synchronize: true,
   logging: true
 })
 
