@@ -1,12 +1,13 @@
 <template>
   <slot></slot>
 </template>
+
 <script setup lang="ts">
-import { MENU_KEY } from '@renderer/keys'
-import { PaymentMethod } from '@renderer/types'
-import { MenuContextInterface } from '@renderer/types'
-import { InventoryCategory, InventoryItem } from '@shared/models'
 import { computed, onMounted, provide, reactive, ref } from 'vue'
+import { MENU_KEY } from '@renderer/keys'
+import { MenuContextInterface } from '@renderer/types'
+import { CheckoutMethod, InventoryCategory, InventoryItem } from '@shared/models'
+import { CalculateOrder } from '@shared/utils'
 
 const loading = ref(false)
 const taxRate = ref<string>()
@@ -42,47 +43,40 @@ function handleQuantityUpdate(id: InventoryItem['id'], quantity: 1 | -1): void {
 }
 
 const preview = computed(() => {
-  const subtotal = Object.entries(selectedItems).reduce((res, [id, quantity]) => {
-    res += (getInventoryItemById(id)?.price ?? 0) * quantity
+  const itemsWithPrices = Object.entries(selectedItems).reduce((res, [id, quantity]) => {
+    const price = getInventoryItemById(id)?.price ?? 0
+    res.push([price, quantity])
     return res
-  }, 0)
-  const tax = subtotal * (parseFloat(taxRate.value ?? '0') / 100)
+  }, [] as [number, number][])
+  const { subtotal, tax, total } = new CalculateOrder(
+    itemsWithPrices,
+    parseFloat(taxRate.value ?? '0')
+  )
   return {
     subtotal,
     tax,
-    total: subtotal + tax
+    total
   }
 })
 
-const paymentMethods = [
+const checkoutMethods = [
   {
     text: 'Cash',
-    value: PaymentMethod.CASH,
+    value: CheckoutMethod.CASH,
     icon: 'cash'
   },
   {
     text: 'Credit Card',
-    value: PaymentMethod.DEBIT_CARD,
+    value: CheckoutMethod.CREDIT_CARD,
     icon: 'credit-card'
   },
   {
     text: 'E-Wallet',
-    value: PaymentMethod.E_WALLET,
+    value: CheckoutMethod.E_WALLET,
     icon: 'qr-code'
   }
 ]
-const selectedPaymentMethod = ref<PaymentMethod>()
-function handlePlaceOrder(): void {
-  switch (selectedPaymentMethod.value) {
-    case PaymentMethod.DEBIT_CARD:
-      return
-    case PaymentMethod.E_WALLET:
-      return
-    case PaymentMethod.CASH:
-    default:
-      console.log('cash payment', preview.value)
-  }
-}
+const selectedCheckoutMethod = ref<CheckoutMethod>()
 
 onMounted(async () => {
   try {
@@ -92,7 +86,7 @@ onMounted(async () => {
     categories.value = await window.api.inventory.getInventoryCategories({
       withItems: true
     })
-    // selectedCategory.value = context.categories[0].id
+    selectedCategory.value = categories.value[0].id
   } catch (error) {
     console.error(error)
   } finally {
@@ -107,15 +101,14 @@ const context: MenuContextInterface = {
   selectedCategory,
   selectedItems,
   hasSelectedItems,
-  paymentMethods,
-  selectedPaymentMethod,
+  checkoutMethods,
+  selectedCheckoutMethod,
   preview,
   isItemSelected,
   getInventoryItemById,
   getSelectedItemIndexById,
   handleQuantityUpdate,
-  handleOrderReset,
-  handlePlaceOrder
+  handleOrderReset
 }
 
 provide(MENU_KEY, context)

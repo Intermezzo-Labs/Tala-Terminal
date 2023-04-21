@@ -1,15 +1,15 @@
 <template>
   <div class="grid grid-cols-3 gap-2 pt-2 pb-4">
     <button
-      v-for="method in paymentMethods"
+      v-for="method in checkoutMethods"
       :key="method.value"
       type="button"
-      @click="selectedPaymentMethod = method.value"
+      @click="selectedCheckoutMethod = method.value"
     >
       <span
         class="border py-4 rounded flex items-center justify-center"
         :class="
-          selectedPaymentMethod === method.value
+          selectedCheckoutMethod === method.value
             ? 'bg-highlight text-base-bg border-transparent'
             : 'border-focus-state'
         "
@@ -26,5 +26,5 @@ import { MENU_KEY } from '@renderer/keys'
 import AppIcon from '../AppIcon.vue'
 import { requireInjection } from '@renderer/utils'
 
-const { paymentMethods, selectedPaymentMethod } = requireInjection(MENU_KEY)
+const { checkoutMethods, selectedCheckoutMethod } = requireInjection(MENU_KEY)
 </script>

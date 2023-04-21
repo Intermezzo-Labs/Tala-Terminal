@@ -17,7 +17,8 @@ export enum SettingKey {
 
 export enum CheckoutMethod {
   CASH = 'cash',
-  BITCOIN = 'bitcoin'
+  CREDIT_CARD = 'credit-card',
+  E_WALLET = 'e-wallet'
 }
 
 export interface Setting {
@@ -72,7 +73,7 @@ export type CustomerInput = Partial<Omit<Customer, 'id'>>
 export type InventoryItemInput = Omit<InventoryItem, 'id'>
 export type InventoryCategoryInput = Omit<InventoryCategory, 'id'>
 export interface OrderInput {
-  items: Pick<InventoryItem, 'id' | 'quantity'>[]
+  items: Record<InventoryItem['id'], OrderItem['quantity']>
 }
 export type CheckoutInput = Pick<Checkout, 'method' | 'amount'> & {
   orderId: Order['id']

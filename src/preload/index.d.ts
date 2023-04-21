@@ -4,7 +4,8 @@ import {
   InventoryItemInput,
   Setting,
   InventoryCategory,
-  InventoryCategoryInput
+  InventoryCategoryInput,
+  Order
 } from 'src/shared/models'
 import { GetAllInventoryCategoriesOptions } from 'src/services/db'
 
@@ -31,6 +32,9 @@ interface CustomAPI {
     createInventoryCategory: (item: InventoryCategoryInput) => Promise<InventoryCategory>
     updateInventoryCategory: (item: InventoryCategory) => Promise<InventoryCategory | null>
     deleteInventoryCategory: (id: InventoryCategory['id']) => Promise<void>
+  }
+  order: {
+    createOrder: (selectedItems: Record<string, number>) => Promise<Order>
   }
 }
 

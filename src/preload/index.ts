@@ -5,7 +5,8 @@ import {
   InventoryItem,
   InventoryItemInput,
   InventoryCategoryInput,
-  InventoryCategory
+  InventoryCategory,
+  Order
 } from '../shared/models'
 import { GetAllInventoryCategoriesOptions } from '../services/db'
 
@@ -124,6 +125,19 @@ const api = {
           reject(error)
         })
         ipcRenderer.send('delete-inventory-category', id)
+      })
+    }
+  },
+  order: {
+    createOrder: (selectedItems: Record<string, number>): Promise<Order> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('create-order-response', (_event, createdOrder) => {
+          resolve(createdOrder)
+        })
+        ipcRenderer.once('create-order-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('create-order', selectedItems)
       })
     }
   }

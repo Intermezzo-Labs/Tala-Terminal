@@ -180,3 +180,12 @@ ipcMain.on('delete-inventory-category', async (event, args) => {
     event.reply('delete-inventory-category-error', error)
   }
 })
+
+ipcMain.on('create-order', async (event, args) => {
+  try {
+    const category = await dbService.createOrder(args)
+    event.reply('create-order-response', category)
+  } catch (error) {
+    event.reply('create-order-error', error)
+  }
+})

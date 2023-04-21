@@ -1,13 +1,22 @@
 import { AppDataSource } from '../db/data-source'
-import { InventoryCategorySchema, InventoryItemSchema, SettingSchema } from '../db/entities'
+import {
+  InventoryCategorySchema,
+  InventoryItemSchema,
+  OrderSchema,
+  SettingSchema
+} from '../db/entities'
 import {
   InventoryCategory,
   InventoryCategoryInput,
   InventoryItem,
   InventoryItemInput,
-  Setting
+  Order,
+  OrderItem,
+  Setting,
+  SettingKey
 } from '../shared/models'
 import { FindManyOptions, In } from 'typeorm'
+import { CalculateOrder } from '../shared/utils'
 
 export interface GetAllInventoryCategoriesOptions {
   withItems?: boolean
@@ -17,6 +26,7 @@ export class DatabaseService {
   private settingsRepository = AppDataSource.getRepository(SettingSchema)
   private inventoryItemRepository = AppDataSource.getRepository(InventoryItemSchema)
   private inventoryCategoryRepository = AppDataSource.getRepository(InventoryCategorySchema)
+  private orderRepository = AppDataSource.getRepository(OrderSchema)
 
   async getAllInventoryItems(): Promise<InventoryItem[]> {
     return this.inventoryItemRepository.find({ relations: ['categories'] })
@@ -82,4 +92,30 @@ export class DatabaseService {
     await this.settingsRepository.update({ key }, updates)
     return this.settingsRepository.findOne({ where: { key } })
   }
+
+  async createOrder(selectedItems: Record<string, number>): Promise<Order> {
+    const inventoryItems = await this.inventoryItemRepository.findBy({
+      id: In(Object.keys(selectedItems))
+    })
+    const items: Omit<OrderItem, 'id'>[] = inventoryItems.map(({ price, name, id }) => ({
+      price,
+      name,
+      quantity: selectedItems[id]
+    }))
+    const order = {
+      items
+    }
+    return await this.orderRepository.save(order)
+  }
+
+  // async createCheckout() {
+  //   const taxRateSetting = await this.getSettingByKey(SettingKey.TAX_RATE)
+  //   const taxRate = taxRateSetting ? String(taxRateSetting) : '0'
+  //   const calculateItems = items.reduce((res, curr) => {
+  //     const quantity = selectedItems[curr.id];
+  //     res.push([curr.quantity, quantity])
+  //     return res
+  //   }, [] as [number, number][])
+  //   const { total } = new CalculateOrder(calculateItems, parseFloat(taxRate))
+  // }
 }
