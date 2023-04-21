@@ -146,6 +146,14 @@ export const OrderItemSchema = new EntitySchema<OrderItem>({
     price: {
       type: 'int'
     }
+  },
+  relations: {
+    order: {
+      type: 'many-to-one',
+      target: 'order',
+      inverseSide: 'items',
+      joinColumn: { name: 'order_id' } // add this line
+    }
   }
 })
 
@@ -167,6 +175,7 @@ export const OrderSchema = new EntitySchema<Order>({
       type: 'one-to-many',
       target: 'orderItem',
       inverseSide: 'order',
+      joinColumn: { name: 'order_id' },
       cascade: ['insert']
     }
   }

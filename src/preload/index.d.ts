@@ -34,6 +34,7 @@ interface CustomAPI {
     deleteInventoryCategory: (id: InventoryCategory['id']) => Promise<void>
   }
   order: {
+    getOrders: () => Promise<Order[]>
     createOrder: (selectedItems: Record<string, number>) => Promise<Order>
   }
 }

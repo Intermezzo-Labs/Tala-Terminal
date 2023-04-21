@@ -52,7 +52,9 @@ export interface InventoryCategory {
   items?: InventoryItem[]
 }
 
-export type OrderItem = BaseItem
+export type OrderItem = BaseItem & {
+  order: Order
+}
 
 export interface Order {
   id: string

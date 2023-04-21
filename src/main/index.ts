@@ -181,10 +181,18 @@ ipcMain.on('delete-inventory-category', async (event, args) => {
   }
 })
 
+ipcMain.on('get-orders', async (event) => {
+  try {
+    const orders = await dbService.getAllOrders()
+    event.reply('get-orders-response', orders)
+  } catch (error) {
+    event.reply('get-orders-error', error)
+  }
+})
 ipcMain.on('create-order', async (event, args) => {
   try {
-    const category = await dbService.createOrder(args)
-    event.reply('create-order-response', category)
+    const order = await dbService.createOrder(args)
+    event.reply('create-order-response', order)
   } catch (error) {
     event.reply('create-order-error', error)
   }

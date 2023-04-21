@@ -129,6 +129,17 @@ const api = {
     }
   },
   order: {
+    getOrders: (): Promise<Order[]> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('get-orders-response', (_event, items) => {
+          resolve(items)
+        })
+        ipcRenderer.once('get-orders-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('get-orders')
+      })
+    },
     createOrder: (selectedItems: Record<string, number>): Promise<Order> => {
       return new Promise((resolve, reject) => {
         ipcRenderer.once('create-order-response', (_event, createdOrder) => {
