@@ -4,11 +4,11 @@
       <tr>
         <th>ID</th>
         <th>Items</th>
-        <th>Date</th>
+        <th>Created</th>
         <th></th>
       </tr>
     </template>
-    <template #tbody>
+    <template v-if="orders?.length" #tbody>
       <tr v-for="order in orders" :key="order.id">
         <td>
           {{ order.id }}
@@ -16,11 +16,13 @@
         <td>{{ order.items?.map((cat) => cat.name).join(', ') }}</td>
         <td>{{ formatDate(order.datetime) }}</td>
         <td class="text-right space-x-2">
-          <button type="button" @click="handleDelete(order.id)">Delete</button>
+          <RouterLink :to="{ name: RouteName.Checkout, params: { orderId: order.id } }">
+            Checkout
+          </RouterLink>
         </td>
       </tr>
     </template>
-    <template v-if="!orders?.length" #tfoot>
+    <template v-else #tfoot>
       <tr>
         <td colspan="5"><p class="p-4 text-center">No orders</p></td>
       </tr>
@@ -30,9 +32,10 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { format, isToday } from 'date-fns'
-import { InventoryItem, Order } from '@shared/models'
 import AppTable from '../AppTable.vue'
+import { format, isToday } from 'date-fns'
+import { Order } from '@shared/models'
+import { RouteName } from '@renderer/router/routeNames'
 
 const orders = ref<Order[]>()
 
@@ -40,10 +43,6 @@ onMounted(() => fetchItems())
 
 async function fetchItems(): Promise<void> {
   orders.value = await window.api.order.getOrders()
-}
-
-async function handleDelete(id: InventoryItem['id']): Promise<void> {
-  console.log('delete', id)
 }
 
 function formatDate(dt: Date): string {

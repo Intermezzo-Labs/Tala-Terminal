@@ -6,7 +6,8 @@ import {
   InventoryItemInput,
   InventoryCategoryInput,
   InventoryCategory,
-  Order
+  Order,
+  Checkout
 } from '../shared/models'
 import { GetAllInventoryCategoriesOptions } from '../services/db'
 
@@ -149,6 +150,19 @@ const api = {
           reject(error)
         })
         ipcRenderer.send('create-order', selectedItems)
+      })
+    }
+  },
+  checkout: {
+    createCheckoutPreview: (orderId: Order['id']): Promise<Checkout | null> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('create-checkout-preview-response', (_event, preview) => {
+          resolve(preview)
+        })
+        ipcRenderer.once('create-checkout-preview-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('create-checkout-preview', orderId)
       })
     }
   }

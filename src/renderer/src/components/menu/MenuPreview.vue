@@ -38,22 +38,7 @@ import AppPanel from '../AppPanel.vue'
 import MenuPreviewSelectedItems from './MenuPreviewSelectedItems.vue'
 import MenuPreviewPaymentMethods from './MenuPreviewPaymentMethods.vue'
 import MenuPreviewSubtotal from './MenuPreviewSubtotal.vue'
-import { CheckoutMethod } from '@shared/models'
-import { toRaw } from 'vue'
 
-const { hasSelectedItems, selectedItems, selectedCheckoutMethod, handleOrderReset } =
+const { hasSelectedItems, selectedCheckoutMethod, handleOrderReset, handlePlaceOrder } =
   requireInjection(MENU_KEY)
-
-async function handlePlaceOrder(): Promise<void> {
-  switch (selectedCheckoutMethod.value) {
-    case CheckoutMethod.CREDIT_CARD:
-      return
-    case CheckoutMethod.E_WALLET:
-      return
-    case CheckoutMethod.CASH:
-    default:
-      console.log(selectedItems)
-      await window.api.order.createOrder(toRaw(selectedItems))
-  }
-}
 </script>

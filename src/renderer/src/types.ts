@@ -16,4 +16,5 @@ export interface MenuContextInterface {
   getInventoryItemById: (id: string) => InventoryItem | undefined
   handleQuantityUpdate: (id: InventoryItem['id'], quantity: 1 | -1) => void
   handleOrderReset: () => void
+  handlePlaceOrder: () => Promise<void>
 }

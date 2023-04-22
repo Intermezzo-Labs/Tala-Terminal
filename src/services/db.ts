@@ -6,6 +6,7 @@ import {
   SettingSchema
 } from '../db/entities'
 import {
+  Checkout,
   InventoryCategory,
   InventoryCategoryInput,
   InventoryItem,
@@ -111,6 +112,28 @@ export class DatabaseService {
     return await this.orderRepository.save(order)
   }
 
+  private async calculateOrder(order: Order): Promise<CalculateOrder> {
+    const taxRateSetting = await this.getSettingByKey(SettingKey.TAX_RATE)
+    const taxRate = taxRateSetting?.value ?? '0'
+    const calculateItems = order.items.reduce((res, curr) => {
+      res.push([curr.price, curr.quantity])
+      return res
+    }, [] as [number, number][])
+    return new CalculateOrder(calculateItems, parseFloat(taxRate))
+  }
+  async createCheckoutPreview(orderId: Order['id']): Promise<Partial<Checkout> | null> {
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId },
+      relations: ['items']
+    })
+    if (!order) throw new Error(`Order ${orderId} doesn't exist!`)
+    const calculator = await this.calculateOrder(order)
+    const preview: Partial<Checkout> = {
+      amount: calculator.total,
+      order
+    }
+    return preview
+  }
   // async createCheckout() {
   //   const taxRateSetting = await this.getSettingByKey(SettingKey.TAX_RATE)
   //   const taxRate = taxRateSetting ? String(taxRateSetting) : '0'

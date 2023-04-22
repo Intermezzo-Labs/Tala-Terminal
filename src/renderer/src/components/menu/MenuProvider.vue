@@ -3,11 +3,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, provide, reactive, ref } from 'vue'
+import { computed, onMounted, provide, reactive, ref, toRaw } from 'vue'
 import { MENU_KEY } from '@renderer/keys'
 import { MenuContextInterface } from '@renderer/types'
 import { CheckoutMethod, InventoryCategory, InventoryItem } from '@shared/models'
 import { CalculateOrder } from '@shared/utils'
+import { useRouter } from 'vue-router'
+import { RouteName } from '@renderer/router/routeNames'
 
 const loading = ref(false)
 const taxRate = ref<string>()
@@ -21,10 +23,6 @@ function isItemSelected(id: InventoryItem['id']): boolean {
 }
 function getSelectedItemIndexById(id: InventoryItem['id']): number {
   return Object.keys(selectedItems).findIndex((selectedId) => selectedId === id) + 1
-}
-
-function handleOrderReset(): void {
-  Object.keys(selectedItems).forEach((id) => delete selectedItems[id])
 }
 
 const items = computed(() => categories.value.map((c) => c.items).flat())
@@ -78,6 +76,24 @@ const checkoutMethods = [
 ]
 const selectedCheckoutMethod = ref<CheckoutMethod>()
 
+function handleOrderReset(): void {
+  Object.keys(selectedItems).forEach((id) => delete selectedItems[id])
+}
+
+const router = useRouter()
+async function handlePlaceOrder(): Promise<void> {
+  const order = await window.api.order.createOrder(toRaw(selectedItems))
+  router.push({
+    name: RouteName.Checkout,
+    params: {
+      orderId: order.id
+    },
+    query: {
+      method: selectedCheckoutMethod.value
+    }
+  })
+}
+
 onMounted(async () => {
   try {
     loading.value = true
@@ -108,7 +124,8 @@ const context: MenuContextInterface = {
   getInventoryItemById,
   getSelectedItemIndexById,
   handleQuantityUpdate,
-  handleOrderReset
+  handleOrderReset,
+  handlePlaceOrder
 }
 
 provide(MENU_KEY, context)

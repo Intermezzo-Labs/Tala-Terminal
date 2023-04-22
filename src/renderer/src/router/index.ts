@@ -23,6 +23,11 @@ const routes: readonly RouteRecordRaw[] = [
     component: () => import('../views/ViewOrders.vue')
   },
   {
+    path: '/orders/:orderId/checkout',
+    name: RouteName.Checkout,
+    component: () => import('../views/ViewCheckout.vue')
+  },
+  {
     path: '/settings',
     name: RouteName.Settings,
     component: () => import('../views/ViewSettings.vue')

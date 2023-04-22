@@ -37,6 +37,9 @@ interface CustomAPI {
     getOrders: () => Promise<Order[]>
     createOrder: (selectedItems: Record<string, number>) => Promise<Order>
   }
+  checkout: {
+    createCheckoutPreview: (orderId: Order['id']) => Promise<Partial<Checkout> | null>
+  }
 }
 
 export default {
