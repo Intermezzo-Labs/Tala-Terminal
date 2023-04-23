@@ -7,3 +7,16 @@ export function requireInjection<T>(key: InjectionKey<T>, defaultValue?: T): T {
   }
   return resolved
 }
+
+export function formatCurrency(
+  value: number | string | undefined,
+  currency = 'USD'
+): number | string | undefined {
+  if (isNaN(Number(value))) return value
+  const formatter = new Intl.NumberFormat('en-US', {
+    currency,
+    style: 'currency',
+    minimumFractionDigits: 2
+  })
+  return formatter.format(Number(value))
+}

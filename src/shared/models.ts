@@ -60,6 +60,7 @@ export interface Order {
   id: string
   datetime: Date
   items: OrderItem[]
+  checkout?: Checkout
 }
 
 export interface Checkout {
@@ -68,7 +69,7 @@ export interface Checkout {
   amount: number
   datetime: Date
   order: Order
-  customer: Customer
+  customer?: Customer
 }
 
 export type CustomerInput = Partial<Omit<Customer, 'id'>>
@@ -77,7 +78,8 @@ export type InventoryCategoryInput = Omit<InventoryCategory, 'id'>
 export interface OrderInput {
   items: Record<InventoryItem['id'], OrderItem['quantity']>
 }
-export type CheckoutInput = Pick<Checkout, 'method' | 'amount'> & {
+export type CheckoutInput = Pick<Checkout, 'method'> & {
   orderId: Order['id']
   customerId: Customer['id']
 }
+export type CheckoutPreview = Pick<Checkout, 'amount' | 'order'>

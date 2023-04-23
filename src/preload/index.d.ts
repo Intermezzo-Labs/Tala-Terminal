@@ -5,7 +5,9 @@ import {
   Setting,
   InventoryCategory,
   InventoryCategoryInput,
-  Order
+  Order,
+  CheckoutInput,
+  CheckoutPreview
 } from 'src/shared/models'
 import { GetAllInventoryCategoriesOptions } from 'src/services/db'
 
@@ -38,7 +40,8 @@ interface CustomAPI {
     createOrder: (selectedItems: Record<string, number>) => Promise<Order>
   }
   checkout: {
-    createCheckoutPreview: (orderId: Order['id']) => Promise<Partial<Checkout> | null>
+    createCheckoutPreview: (orderId: CheckoutInput['orderId']) => Promise<CheckoutPreview | null>
+    createCheckout: (input: CheckoutInput) => Promise<Checkout>
   }
 }
 

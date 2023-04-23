@@ -177,6 +177,11 @@ export const OrderSchema = new EntitySchema<Order>({
       inverseSide: 'order',
       joinColumn: { name: 'order_id' },
       cascade: ['insert']
+    },
+    checkout: {
+      type: 'one-to-one',
+      target: 'checkout',
+      joinColumn: { name: 'checkout_id' }
     }
   }
 })
@@ -205,12 +210,13 @@ export const CheckoutSchema = new EntitySchema<Checkout>({
     customer: {
       type: 'many-to-one',
       target: 'customer',
-      joinColumn: { name: 'customerId' }
+      joinColumn: { name: 'customer_id' },
+      nullable: true
     },
     order: {
       type: 'one-to-one',
       target: 'order',
-      joinColumn: { name: 'orderId' }
+      joinColumn: { name: 'order_id' }
     }
   }
 })

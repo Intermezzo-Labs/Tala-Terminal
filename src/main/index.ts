@@ -205,3 +205,11 @@ ipcMain.on('create-checkout-preview', async (event, args) => {
     event.reply('create-checkout-preview-error', error)
   }
 })
+ipcMain.on('create-checkout', async (event, args) => {
+  try {
+    const order = await dbService.createCheckout(args)
+    event.reply('create-checkout-response', order)
+  } catch (error) {
+    event.reply('create-checkout-error', error)
+  }
+})

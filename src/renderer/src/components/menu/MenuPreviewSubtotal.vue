@@ -16,16 +16,7 @@
 
 <script setup lang="ts">
 import { MENU_KEY } from '@renderer/keys'
-import { requireInjection } from '@renderer/utils'
+import { formatCurrency, requireInjection } from '@renderer/utils'
 
 const { taxRate, preview } = requireInjection(MENU_KEY)
-
-function formatCurrency(value: number, currency = 'USD'): string {
-  const formatter = new Intl.NumberFormat('en-US', {
-    currency,
-    style: 'currency',
-    minimumFractionDigits: 2
-  })
-  return formatter.format(value)
-}
 </script>

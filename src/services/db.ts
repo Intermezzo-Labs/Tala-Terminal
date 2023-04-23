@@ -1,5 +1,6 @@
 import { AppDataSource } from '../db/data-source'
 import {
+  CheckoutSchema,
   InventoryCategorySchema,
   InventoryItemSchema,
   OrderSchema,
@@ -7,6 +8,8 @@ import {
 } from '../db/entities'
 import {
   Checkout,
+  CheckoutInput,
+  CheckoutPreview,
   InventoryCategory,
   InventoryCategoryInput,
   InventoryItem,
@@ -28,6 +31,7 @@ export class DatabaseService {
   private inventoryItemRepository = AppDataSource.getRepository(InventoryItemSchema)
   private inventoryCategoryRepository = AppDataSource.getRepository(InventoryCategorySchema)
   private orderRepository = AppDataSource.getRepository(OrderSchema)
+  private checkoutRepository = AppDataSource.getRepository(CheckoutSchema)
 
   async getAllInventoryItems(): Promise<InventoryItem[]> {
     return this.inventoryItemRepository.find({ relations: ['categories'] })
@@ -95,7 +99,7 @@ export class DatabaseService {
   }
 
   async getAllOrders(): Promise<Order[]> {
-    return this.orderRepository.find({ relations: ['items'] })
+    return this.orderRepository.find({ relations: ['items', 'checkout'] })
   }
   async createOrder(selectedItems: Record<string, number>): Promise<Order> {
     const inventoryItems = await this.inventoryItemRepository.findBy({
@@ -121,27 +125,31 @@ export class DatabaseService {
     }, [] as [number, number][])
     return new CalculateOrder(calculateItems, parseFloat(taxRate))
   }
-  async createCheckoutPreview(orderId: Order['id']): Promise<Partial<Checkout> | null> {
+  async createCheckoutPreview(orderId: CheckoutInput['orderId']): Promise<CheckoutPreview | null> {
     const order = await this.orderRepository.findOne({
       where: { id: orderId },
       relations: ['items']
     })
     if (!order) throw new Error(`Order ${orderId} doesn't exist!`)
     const calculator = await this.calculateOrder(order)
-    const preview: Partial<Checkout> = {
+    return {
       amount: calculator.total,
       order
     }
-    return preview
   }
-  // async createCheckout() {
-  //   const taxRateSetting = await this.getSettingByKey(SettingKey.TAX_RATE)
-  //   const taxRate = taxRateSetting ? String(taxRateSetting) : '0'
-  //   const calculateItems = items.reduce((res, curr) => {
-  //     const quantity = selectedItems[curr.id];
-  //     res.push([curr.quantity, quantity])
-  //     return res
-  //   }, [] as [number, number][])
-  //   const { total } = new CalculateOrder(calculateItems, parseFloat(taxRate))
-  // }
+  async createCheckout(input: CheckoutInput): Promise<Checkout> {
+    const preview = await this.createCheckoutPreview(input.orderId)
+    if (!preview) throw new Error(`Order ${input.orderId} doesn't exist!`)
+
+    const calculator = await this.calculateOrder(preview.order)
+    if (!calculator?.total) throw new Error(`Amount cannot be null. Order ${input.orderId}`)
+
+    const checkout = await this.checkoutRepository.save({
+      amount: calculator.total,
+      order: preview.order,
+      method: input.method
+    })
+    await this.orderRepository.update({ id: input.orderId }, { checkout })
+    return checkout
+  }
 }
