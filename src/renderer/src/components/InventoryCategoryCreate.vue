@@ -22,6 +22,13 @@ import { reactive } from 'vue'
 import InputField from './InputField.vue'
 import { InventoryCategory, InventoryCategoryInput } from '@shared/models'
 
+const props = defineProps({
+  callback: {
+    type: Function,
+    default: () => {}
+  }
+})
+
 const form: InventoryCategoryInput = reactive({
   name: ''
 })
@@ -29,6 +36,7 @@ const form: InventoryCategoryInput = reactive({
 async function handleSubmit(): Promise<InventoryCategory | void> {
   try {
     await window.api.inventory.createInventoryCategory({ ...form })
+    props.callback()
   } catch (error) {
     console.error(error)
   }

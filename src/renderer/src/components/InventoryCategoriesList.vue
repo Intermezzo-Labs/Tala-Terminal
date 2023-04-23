@@ -26,14 +26,14 @@
         </td>
         <td>{{ category.items?.length }}</td>
         <td class="text-right space-x-2">
-          <button
+          <!-- <button
             type="button"
             @click="
               modalStore.openModal({ component: InventoryCategoryCreate, props: { category } })
             "
           >
             Edit
-          </button>
+          </button> -->
           <button type="button" @click="handleDelete(category.id)">Delete</button>
         </td>
       </tr>
