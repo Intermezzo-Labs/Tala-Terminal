@@ -18,7 +18,6 @@
       <div :class="hasSelectedItems ? 'fixed inset-4 top-auto sm:static' : ''">
         <h3 class="text-sm text-base-text">Payment Method</h3>
         <CheckoutMethods v-model="selectedCheckoutMethod" class="pt-2 pb-4" />
-        <MenuPreviewPaymentMethods />
         <button
           type="button"
           class="btn"
