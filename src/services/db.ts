@@ -137,19 +137,20 @@ export class DatabaseService {
       order
     }
   }
-  async createCheckout(input: CheckoutInput): Promise<Checkout> {
-    const preview = await this.createCheckoutPreview(input.orderId)
-    if (!preview) throw new Error(`Order ${input.orderId} doesn't exist!`)
+  async createCheckout({ orderId, method, refId }: CheckoutInput): Promise<Checkout> {
+    const preview = await this.createCheckoutPreview(orderId)
+    if (!preview) throw new Error(`Order ${orderId} doesn't exist!`)
+    if (!preview.amount) throw new Error(`Amount cannot be null. Order ${orderId}`)
 
-    const calculator = await this.calculateOrder(preview.order)
-    if (!calculator?.total) throw new Error(`Amount cannot be null. Order ${input.orderId}`)
-
-    const checkout = await this.checkoutRepository.save({
-      amount: calculator.total,
+    const obj: Partial<Checkout> = {
+      amount: preview.amount,
       order: preview.order,
-      method: input.method
-    })
-    await this.orderRepository.update({ id: input.orderId }, { checkout })
+      method,
+      refId
+    }
+
+    const checkout = await this.checkoutRepository.save(obj)
+    await this.orderRepository.update({ id: orderId }, { checkout })
     return checkout
   }
 }

@@ -5,6 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import { AppDataSource } from '../db/data-source'
 import { DatabaseService } from '../services/db'
 import { SettingKey } from '../shared/models'
+import { createCoinbaseCharge } from '../services/coinbase'
 
 function createWindow(): void {
   // Create the browser window.
@@ -211,5 +212,21 @@ ipcMain.on('create-checkout', async (event, args) => {
     event.reply('create-checkout-response', order)
   } catch (error) {
     event.reply('create-checkout-error', error)
+  }
+})
+ipcMain.on('create-coinbase-charge', async (event, orderId) => {
+  try {
+    const preview = await dbService.createCheckoutPreview(orderId)
+    if (!preview) throw new Error(`Order ${orderId} doesn't exist!`)
+    if (!preview.amount) throw new Error(`Amount cannot be null. Order ${orderId}`)
+
+    const charge = await createCoinbaseCharge({
+      amount: String(preview.amount),
+      description: preview.order.items.map((i) => `${i.name} (x${i.quantity})`).join(', '),
+      metadata: preview
+    })
+    event.reply('create-coinbase-charge-response', charge)
+  } catch (error) {
+    event.reply('create-coinbase-charge-error', error)
   }
 })

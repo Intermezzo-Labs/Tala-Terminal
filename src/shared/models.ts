@@ -68,6 +68,7 @@ export interface Checkout {
   method: CheckoutMethod
   amount: number
   datetime: Date
+  refId?: string
   order: Order
   customer?: Customer
 }
@@ -78,7 +79,7 @@ export type InventoryCategoryInput = Omit<InventoryCategory, 'id'>
 export interface OrderInput {
   items: Record<InventoryItem['id'], OrderItem['quantity']>
 }
-export type CheckoutInput = Pick<Checkout, 'method'> & {
+export type CheckoutInput = Pick<Checkout, 'method' | 'refId'> & {
   orderId: Order['id']
   customerId: Customer['id']
 }

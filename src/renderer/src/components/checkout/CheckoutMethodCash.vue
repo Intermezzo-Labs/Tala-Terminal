@@ -17,7 +17,7 @@
       </div>
       <dl class="grid grid-cols-2 gap-2">
         <dt>Total</dt>
-        <dd>{{ formatCurrency(checkoutData?.amount) }}</dd>
+        <dd>{{ formatCurrency(checkoutPreview?.amount) }}</dd>
         <dt class="text-4xl">Paid</dt>
         <dd class="text-4xl">{{ formatCurrency(paidAmount) }}</dd>
         <dt>Change</dt>
@@ -34,29 +34,25 @@
 </template>
 
 <script setup lang="ts">
-import CheckoutCalculator from '@renderer/components/checkout/CheckoutCalculator.vue'
-import { RouteName } from '@renderer/router/routeNames'
+import { PropType, computed, reactive, ref, toRaw } from 'vue'
+import { useRouter } from 'vue-router'
 import { formatCurrency } from '@renderer/utils'
 import { CheckoutPreview, CheckoutInput, CheckoutMethod } from '@shared/models'
-import { computed, onMounted, reactive, ref, toRaw } from 'vue'
-import { useRouter } from 'vue-router'
+import CheckoutCalculator from '@renderer/components/checkout/CheckoutCalculator.vue'
+import { RouteName } from '@renderer/router/routeNames'
 
 const quickOptions = [20, 50, 100]
 
 const props = defineProps({
-  orderId: {
-    type: String,
+  checkoutPreview: {
+    type: Object as PropType<CheckoutPreview>,
     required: true,
-    default: ''
+    default: () => ({})
   }
 })
 
-const checkoutData = ref<CheckoutPreview | null>()
-onMounted(async () => {
-  checkoutData.value = await window.api.checkout.createCheckoutPreview(props.orderId)
-})
 const items = computed(() =>
-  checkoutData.value?.order?.items
+  props.checkoutPreview?.order?.items
     ?.reduce((res, curr) => {
       res.push(`${curr.name} (x${curr.quantity})`)
       return res
@@ -66,12 +62,12 @@ const items = computed(() =>
 
 const checkoutInput = reactive<CheckoutInput>({
   method: CheckoutMethod.CASH,
-  orderId: props.orderId,
+  orderId: props.checkoutPreview.order.id,
   customerId: ''
 })
 
 const paidAmount = ref<string>('0')
-const changeAmount = computed(() => Number(paidAmount.value) - Number(checkoutData.value?.amount))
+const changeAmount = computed(() => Number(paidAmount.value) - Number(props.checkoutPreview.amount))
 
 const router = useRouter()
 async function handleComplete(): Promise<void> {
