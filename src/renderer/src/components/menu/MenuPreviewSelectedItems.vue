@@ -14,7 +14,7 @@
         <span class="text-base-text">x{{ quantity }}</span>
       </h4>
 
-      <p>${{ (getInventoryItemById(id as string)?.price ?? 0) * quantity }}</p>
+      <p>${{ itemSubtotal(getInventoryItemById(id as string)?.price, quantity) }}</p>
     </div>
   </div>
 </template>
@@ -24,4 +24,8 @@ import { MENU_KEY } from '@renderer/keys'
 import { requireInjection } from '@renderer/utils'
 
 const { selectedItems, getSelectedItemIndexById, getInventoryItemById } = requireInjection(MENU_KEY)
+
+function itemSubtotal(price = 0, quantity: number): string {
+  return Number(price * quantity).toFixed(2)
+}
 </script>

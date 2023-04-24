@@ -22,13 +22,13 @@ export class CalculateOrder {
 
   get subtotal(): number {
     const subtotal = this.calculateSubtotal()
-    return this.roundUp(subtotal) / 100
+    return this.roundUp(subtotal)
   }
 
   get tax(): number {
     const subtotal = this.calculateSubtotal()
     const tax = subtotal * (this.taxRate / 100)
-    return this.roundUp(tax) / 100
+    return this.roundUp(tax)
   }
 
   get total(): number {

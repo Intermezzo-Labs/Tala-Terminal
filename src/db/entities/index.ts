@@ -197,16 +197,21 @@ export const CheckoutSchema = new EntitySchema<Checkout>({
     amount: {
       type: 'float'
     },
-    refId: {
-      type: 'varchar'
-    },
     datetime: {
       type: 'datetime',
       default: (): Date => 'CURRENT_TIMESTAMP' as unknown as Date
     },
     method: {
       type: 'varchar',
-      nullable: false
+      nullable: true
+    },
+    refId: {
+      type: 'varchar',
+      nullable: true
+    },
+    status: {
+      type: 'varchar',
+      nullable: true
     }
   },
   relations: {

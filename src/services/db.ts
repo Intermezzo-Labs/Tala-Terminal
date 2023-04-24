@@ -9,7 +9,9 @@ import {
 import {
   Checkout,
   CheckoutInput,
+  CheckoutMethod,
   CheckoutPreview,
+  CheckoutStatus,
   InventoryCategory,
   InventoryCategoryInput,
   InventoryItem,
@@ -137,20 +139,29 @@ export class DatabaseService {
       order
     }
   }
+  async getCheckoutById(id: string): Promise<Checkout | null> {
+    return await this.checkoutRepository.findOneBy({ id })
+  }
   async createCheckout({ orderId, method, refId }: CheckoutInput): Promise<Checkout> {
     const preview = await this.createCheckoutPreview(orderId)
     if (!preview) throw new Error(`Order ${orderId} doesn't exist!`)
     if (!preview.amount) throw new Error(`Amount cannot be null. Order ${orderId}`)
 
+    const status = method === CheckoutMethod.CASH ? CheckoutStatus.PAID : CheckoutStatus.PENDING
     const obj: Partial<Checkout> = {
       amount: preview.amount,
       order: preview.order,
       method,
-      refId
+      refId,
+      status
     }
 
     const checkout = await this.checkoutRepository.save(obj)
     await this.orderRepository.update({ id: orderId }, { checkout })
     return checkout
+  }
+  async updateCheckout({ id, ...rest }: Checkout): Promise<Checkout | null> {
+    await this.checkoutRepository.update({ id }, rest)
+    return this.checkoutRepository.findOneBy({ id })
   }
 }

@@ -24,38 +24,17 @@
 <script setup lang="ts">
 import { CheckoutMethod } from '@shared/models'
 import AppIcon from '../AppIcon.vue'
+import { PropType } from 'vue'
+import { checkoutMethods } from '@renderer/utils'
 
 defineEmits(['update:modelValue'])
 
 defineProps({
   modelValue: {
-    required: true,
-    validator(v: CheckoutMethod) {
-      return v === undefined || CheckoutMethod[v] !== undefined
-    }
+    type: String as PropType<string>,
+    required: false,
+    validator: (val: CheckoutMethod) =>
+      [CheckoutMethod.CASH, CheckoutMethod.CREDIT_CARD, CheckoutMethod.E_WALLET].includes(val)
   }
 })
-
-interface CheckoutMethodItem {
-  text: string
-  value: CheckoutMethod
-  icon: string
-}
-const checkoutMethods: CheckoutMethodItem[] = [
-  {
-    text: 'Cash',
-    value: CheckoutMethod.CASH,
-    icon: 'cash'
-  },
-  {
-    text: 'Credit Card',
-    value: CheckoutMethod.CREDIT_CARD,
-    icon: 'credit-card'
-  },
-  {
-    text: 'E-Wallet',
-    value: CheckoutMethod.E_WALLET,
-    icon: 'qr-code'
-  }
-]
 </script>

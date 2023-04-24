@@ -1,18 +1,12 @@
 import { Client, CreateCharge, resources, Pagination } from 'coinbase-commerce-node'
 import { config } from 'dotenv'
+import { CoinbaseChargeArgs, CoinbaseChargeResponse } from '../shared/models'
 config()
 
 const apiKey = process.env.COINBASE_API_KEY
 
 if (!apiKey) throw 'COINBASE_API_KEY must be set'
 Client.init(apiKey)
-
-export interface CoinbaseChargeArgs {
-  description: string
-  amount: string
-  metadata?: Record<string, unknown>
-}
-export type CoinbaseChargeResponse = resources.Charge
 
 export const createCoinbaseCharge = async ({
   description,

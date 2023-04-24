@@ -4,8 +4,9 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { AppDataSource } from '../db/data-source'
 import { DatabaseService } from '../services/db'
-import { SettingKey } from '../shared/models'
-import { createCoinbaseCharge } from '../services/coinbase'
+import { CheckoutMethod, CheckoutStatus, SettingKey } from '../shared/models'
+import { createCoinbaseCharge, getCoinbaseChargeByCodeOrId } from '../services/coinbase'
+import { isPast } from 'date-fns'
 
 function createWindow(): void {
   // Create the browser window.
@@ -196,6 +197,27 @@ ipcMain.on('create-order', async (event, args) => {
     event.reply('create-order-response', order)
   } catch (error) {
     event.reply('create-order-error', error)
+  }
+})
+
+ipcMain.on('get-checkout', async (event, args) => {
+  try {
+    let checkout = await dbService.getCheckoutById(args)
+    if (checkout?.status !== CheckoutStatus.PAID) {
+      if (checkout?.method === CheckoutMethod.E_WALLET && checkout.refId) {
+        const charge = await getCoinbaseChargeByCodeOrId(checkout.refId)
+        if (!charge) throw new Error(`Coinbase charge doesn't exist. Ref ID ${checkout.refId}`)
+        const status = charge.confirmed_at
+          ? CheckoutStatus.PAID
+          : isPast(new Date(charge.expires_at))
+          ? CheckoutStatus.FAILED
+          : CheckoutStatus.PENDING
+        checkout = await dbService.updateCheckout({ ...checkout, status })
+      }
+    }
+    event.reply('get-checkout-response', checkout)
+  } catch (error) {
+    event.reply('get-checkout-error', error)
   }
 })
 ipcMain.on('create-checkout-preview', async (event, args) => {

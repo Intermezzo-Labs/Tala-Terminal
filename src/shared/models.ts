@@ -1,3 +1,5 @@
+import { resources } from 'coinbase-commerce-node'
+
 export enum SettingKey {
   // Company Information
   COMPANY_NAME = 'companyName',
@@ -19,6 +21,12 @@ export enum CheckoutMethod {
   CASH = 'cash',
   CREDIT_CARD = 'credit-card',
   E_WALLET = 'e-wallet'
+}
+
+export enum CheckoutStatus {
+  PAID = 'paid',
+  PENDING = 'pending',
+  FAILED = 'failed'
 }
 
 export interface Setting {
@@ -69,6 +77,7 @@ export interface Checkout {
   amount: number
   datetime: Date
   refId?: string
+  status: CheckoutStatus
   order: Order
   customer?: Customer
 }
@@ -84,3 +93,10 @@ export type CheckoutInput = Pick<Checkout, 'method' | 'refId'> & {
   customerId: Customer['id']
 }
 export type CheckoutPreview = Pick<Checkout, 'amount' | 'order'>
+
+export interface CoinbaseChargeArgs {
+  description: string
+  amount: string
+  metadata?: Record<string, unknown>
+}
+export type CoinbaseChargeResponse = resources.Charge

@@ -5,6 +5,7 @@
         <th>ID</th>
         <th>Items</th>
         <th>Created</th>
+        <th>Payment</th>
         <th>Status</th>
         <th></th>
       </tr>
@@ -16,11 +17,18 @@
         </td>
         <td>{{ order.items?.map((cat) => cat.name).join(', ') }}</td>
         <td>{{ formatDate(order.datetime) }}</td>
-        <td>{{ getStatus(order.checkout) }}</td>
+        <td>{{ getCheckoutMethod(order.checkout) }}</td>
+        <td>
+          <AppBadge v-if="order.checkout?.status">{{ order.checkout?.status }}</AppBadge>
+        </td>
         <td class="text-right space-x-2">
           <RouterLink
-            v-if="!order.checkout"
-            :to="{ name: RouteName.Checkout, params: { orderId: order.id } }"
+            v-if="order.checkout?.status !== CheckoutStatus.PAID"
+            :to="{
+              name: RouteName.Checkout,
+              params: { orderId: order.id },
+              query: { checkoutId: order.checkout?.id }
+            }"
           >
             Checkout
           </RouterLink>
@@ -39,8 +47,10 @@
 import { onMounted, ref } from 'vue'
 import AppTable from '../AppTable.vue'
 import { format, isToday } from 'date-fns'
-import { CheckoutMethod, Order } from '@shared/models'
+import { CheckoutStatus, Order } from '@shared/models'
 import { RouteName } from '@renderer/router/routeNames'
+import { checkoutMethods } from '@renderer/utils'
+import AppBadge from '../AppBadge.vue'
 
 const orders = ref<Order[]>()
 
@@ -57,16 +67,7 @@ function formatDate(dt: Date): string {
   return format(dt, 'MMM d, yyyy, h:mm a')
 }
 
-enum OrderStatus {
-  UNPAID = 'Unpaid',
-  PAID = 'Paid'
-}
-function getStatus(checkout: Order['checkout']): OrderStatus {
-  switch (checkout?.method) {
-    case CheckoutMethod.CASH:
-      return OrderStatus.PAID
-    default:
-      return OrderStatus.UNPAID
-  }
+function getCheckoutMethod(checkout: Order['checkout']): string {
+  return checkoutMethods.find((c) => c.value === checkout?.method)?.text ?? ''
 }
 </script>

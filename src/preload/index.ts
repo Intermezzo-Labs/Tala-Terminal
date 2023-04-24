@@ -9,10 +9,11 @@ import {
   Order,
   Checkout,
   CheckoutInput,
-  CheckoutPreview
+  CheckoutPreview,
+  CoinbaseChargeResponse,
+  CheckoutDetails
 } from '../shared/models'
 import { GetAllInventoryCategoriesOptions } from '../services/db'
-import { CoinbaseChargeResponse } from '../services/coinbase'
 
 // Custom APIs for renderer
 const api = {
@@ -157,6 +158,17 @@ const api = {
     }
   },
   checkout: {
+    getCheckout: (checkoutId: Checkout['id']): Promise<Checkout | null> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('get-checkout-response', (_event, checkout) => {
+          resolve(checkout)
+        })
+        ipcRenderer.once('get-checkout-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('get-checkout', checkoutId)
+      })
+    },
     createCheckoutPreview: (orderId: CheckoutInput['orderId']): Promise<CheckoutPreview | null> => {
       return new Promise((resolve, reject) => {
         ipcRenderer.once('create-checkout-preview-response', (_event, preview) => {

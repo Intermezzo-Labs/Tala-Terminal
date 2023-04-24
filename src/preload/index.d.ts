@@ -7,10 +7,11 @@ import {
   InventoryCategoryInput,
   Order,
   CheckoutInput,
-  CheckoutPreview
+  CheckoutPreview,
+  CoinbaseChargeResponse,
+  Checkout
 } from 'src/shared/models'
 import { GetAllInventoryCategoriesOptions } from 'src/services/db'
-import { CoinbaseChargeResponse } from 'src/services/coinbase'
 
 declare global {
   interface Window {
@@ -41,6 +42,7 @@ interface CustomAPI {
     createOrder: (selectedItems: Record<string, number>) => Promise<Order>
   }
   checkout: {
+    getCheckout: (checkoutId: Checkout['id']) => Promise<Checkout | null>
     createCheckoutPreview: (orderId: CheckoutInput['orderId']) => Promise<CheckoutPreview | null>
     createCheckout: (input: CheckoutInput) => Promise<Checkout>
     createCoinbaseCharge: (orderId: CheckoutInput['orderId']) => Promise<CoinbaseChargeResponse>
