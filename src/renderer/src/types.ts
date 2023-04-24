@@ -8,7 +8,6 @@ export interface MenuContextInterface {
   selectedCategory: Ref<InventoryCategory['id'] | undefined>
   selectedItems: Record<string, number>
   selectedCheckoutMethod: Ref<CheckoutMethod | undefined>
-  checkoutMethods: { text: string; value: CheckoutMethod; icon: string }[]
   hasSelectedItems: ComputedRef<boolean>
   preview: ComputedRef<Record<string, number>>
   isItemSelected: (id: InventoryItem['id']) => boolean

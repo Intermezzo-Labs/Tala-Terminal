@@ -17,6 +17,7 @@
       <MenuPreviewSubtotal />
       <div :class="hasSelectedItems ? 'fixed inset-4 top-auto sm:static' : ''">
         <h3 class="text-sm text-base-text">Payment Method</h3>
+        <CheckoutMethods v-model="selectedCheckoutMethod" class="pt-2 pb-4" />
         <MenuPreviewPaymentMethods />
         <button
           type="button"
@@ -38,7 +39,8 @@ import AppPanel from '../AppPanel.vue'
 import MenuPreviewSelectedItems from './MenuPreviewSelectedItems.vue'
 import MenuPreviewPaymentMethods from './MenuPreviewPaymentMethods.vue'
 import MenuPreviewSubtotal from './MenuPreviewSubtotal.vue'
+import CheckoutMethods from '../checkout/CheckoutMethods.vue'
 
-const { hasSelectedItems, selectedCheckoutMethod, handleOrderReset, handlePlaceOrder } =
+const { hasSelectedItems, handleOrderReset, handlePlaceOrder, selectedCheckoutMethod } =
   requireInjection(MENU_KEY)
 </script>

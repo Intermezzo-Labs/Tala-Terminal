@@ -1,26 +1,29 @@
 <template>
   <div
-    class="grid grid-cols-2 gap-16 h-screen max-w-fit mx-auto place-content-baseline items-center content-center"
+    class="grid grid-cols-2 gap-16 h-screen max-w-screen-sm mx-auto place-content-baseline items-center content-center"
   >
     <div>
-      <CheckoutCalculator v-model="paidAmount" class="w-80" />
+      <CheckoutCalculator v-model="paidAmount" />
       <div class="grid grid-cols-3 gap-1 py-4">
         <button v-for="n in quickOptions" :key="n" @click="paidAmount = String(n)">
           {{ formatCurrency(n) }}
         </button>
       </div>
     </div>
-    <div>
-      <dl class="grid grid-cols-2 gap-2 mb-8">
-        <dt>Order</dt>
-        <dd>{{ items }}</dd>
+    <div class="space-y-8">
+      <div class="text-xs">
+        <h5>Order items</h5>
+        <p class="italic">{{ items }}</p>
+      </div>
+      <dl class="grid grid-cols-2 gap-2">
         <dt>Total</dt>
         <dd>{{ formatCurrency(checkoutData?.amount) }}</dd>
         <dt class="text-4xl">Paid</dt>
         <dd class="text-4xl">{{ formatCurrency(paidAmount) }}</dd>
-        <dt v-show="Number(paidAmount)">Change</dt>
-        <dd v-show="Number(paidAmount)" class="text-highlight">
-          {{ formatCurrency(changeAmount) }}
+        <dt>Change</dt>
+        <dd>
+          <span v-if="changeAmount < 0" class="text-red-400">Insufficient amount</span>
+          <span v-else class="text-highlight">{{ formatCurrency(changeAmount) }}</span>
         </dd>
       </dl>
       <button type="button" class="btn" :disabled="changeAmount < 0" @click="handleComplete">

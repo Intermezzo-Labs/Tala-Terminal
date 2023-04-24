@@ -57,23 +57,6 @@ const preview = computed(() => {
   }
 })
 
-const checkoutMethods = [
-  {
-    text: 'Cash',
-    value: CheckoutMethod.CASH,
-    icon: 'cash'
-  },
-  {
-    text: 'Credit Card',
-    value: CheckoutMethod.CREDIT_CARD,
-    icon: 'credit-card'
-  },
-  {
-    text: 'E-Wallet',
-    value: CheckoutMethod.E_WALLET,
-    icon: 'qr-code'
-  }
-]
 const selectedCheckoutMethod = ref<CheckoutMethod>()
 
 function handleOrderReset(): void {
@@ -117,7 +100,6 @@ const context: MenuContextInterface = {
   selectedCategory,
   selectedItems,
   hasSelectedItems,
-  checkoutMethods,
   selectedCheckoutMethod,
   preview,
   isItemSelected,
