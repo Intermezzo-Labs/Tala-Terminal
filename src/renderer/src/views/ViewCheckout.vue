@@ -1,6 +1,6 @@
 <template>
   <div>
-    <component v-if="method" :is="component" :order-id="$route.params.orderId" />
+    <component :is="component" v-if="method" :order-id="$route.params.orderId" />
     <div v-else class="h-screen flex flex-col items-center justify-center gap-4">
       <h2>Select a checkout method</h2>
       <CheckoutMethods v-model="method" />

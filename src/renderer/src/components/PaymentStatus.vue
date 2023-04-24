@@ -74,6 +74,7 @@ const statusClasses = computed(() => {
     case 'PENDING':
       return 'bg-amber-100 text-amber-700'
     case 'EXPIRED':
+    default:
       return 'bg-red-100 text-red-700'
   }
 })
