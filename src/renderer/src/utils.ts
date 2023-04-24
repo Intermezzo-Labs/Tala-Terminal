@@ -16,7 +16,7 @@ export function formatCurrency(
   const formatter = new Intl.NumberFormat('en-US', {
     currency,
     style: 'currency',
-    minimumFractionDigits: 2
+    minimumFractionDigits: 0
   })
   return formatter.format(Number(value))
 }

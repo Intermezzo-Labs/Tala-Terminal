@@ -15,14 +15,22 @@ export class CalculateOrder {
     }, 0)
   }
 
+  private roundUp(value: number): number {
+    return Math.ceil(value)
+  }
+
   get subtotal(): number {
-    return this.calculateSubtotal()
+    const subtotal = this.calculateSubtotal()
+    return this.roundUp(subtotal)
   }
   get tax(): number {
     const subtotal = this.calculateSubtotal()
-    return subtotal * (this.taxRate / 100)
+    const tax = subtotal * (this.taxRate / 100)
+    return this.roundUp(tax)
   }
   get total(): number {
-    return this.subtotal + this.tax
+    const subtotal = this.calculateSubtotal()
+    const tax = subtotal * (this.taxRate / 100)
+    return this.roundUp(subtotal + tax)
   }
 }
