@@ -3,6 +3,7 @@ type CalculateItemTuple = [price: number, quantity: number]
 export class CalculateOrder {
   items: CalculateItemTuple[] = []
   taxRate = 0
+
   constructor(items: CalculateItemTuple[], taxRate = 0) {
     this.items = items
     this.taxRate = taxRate
@@ -15,14 +16,25 @@ export class CalculateOrder {
     }, 0)
   }
 
-  get subtotal(): number {
-    return this.calculateSubtotal()
+  private roundUp(value: number): number {
+    return Math.ceil(value * 100) / 100
   }
+
+  get subtotal(): number {
+    const subtotal = this.calculateSubtotal()
+    return this.roundUp(subtotal) / 100
+  }
+
   get tax(): number {
     const subtotal = this.calculateSubtotal()
-    return subtotal * (this.taxRate / 100)
+    const tax = subtotal * (this.taxRate / 100)
+    return this.roundUp(tax) / 100
   }
+
   get total(): number {
-    return this.subtotal + this.tax
+    const subtotal = this.calculateSubtotal()
+    const tax = subtotal * (this.taxRate / 100)
+    const total = subtotal + tax
+    return Math.round(this.roundUp(total) * 100) / 100
   }
 }

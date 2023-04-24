@@ -37,7 +37,6 @@ import { MENU_KEY } from '@renderer/keys'
 import { requireInjection } from '@renderer/utils'
 import AppPanel from '../AppPanel.vue'
 import MenuPreviewSelectedItems from './MenuPreviewSelectedItems.vue'
-import MenuPreviewPaymentMethods from './MenuPreviewPaymentMethods.vue'
 import MenuPreviewSubtotal from './MenuPreviewSubtotal.vue'
 import CheckoutMethods from '../checkout/CheckoutMethods.vue'
 
