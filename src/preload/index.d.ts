@@ -46,6 +46,7 @@ interface CustomAPI {
     getCheckout: (checkoutId: Checkout['id']) => Promise<Checkout | null>
     createCheckoutPreview: (orderId: CheckoutInput['orderId']) => Promise<CheckoutPreview | null>
     createCheckout: (input: CheckoutInput) => Promise<Checkout>
+    deleteCheckout: (checkoutId: Checkout['id']) => Promise<void>
     createCoinbaseCharge: (orderId: CheckoutInput['orderId']) => Promise<CoinbaseChargeResponse>
   }
 }

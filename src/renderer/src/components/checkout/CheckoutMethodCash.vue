@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="grid grid-cols-2 gap-16 h-screen max-w-screen-sm mx-auto place-content-baseline items-center content-center"
-  >
+  <div class="grid grid-cols-2 gap-16 h-screen place-content-baseline items-center content-center">
     <div>
       <CheckoutCalculator v-model="paidAmount" />
       <div class="grid grid-cols-3 gap-1 py-4">
@@ -10,7 +8,7 @@
         </button>
       </div>
     </div>
-    <div class="space-y-8">
+    <div class="space-y-8 w-64">
       <div class="text-xs">
         <h5>Order items</h5>
         <p class="italic">{{ items }}</p>

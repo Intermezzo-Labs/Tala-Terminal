@@ -78,8 +78,7 @@ export class DatabaseService {
     return this.inventoryCategoryRepository.findOneBy({ id })
   }
   async deleteInventoryCategory(id: InventoryCategory['id']): Promise<void> {
-    const response = await this.inventoryCategoryRepository.delete(id)
-    console.log(response)
+    await this.inventoryCategoryRepository.delete(id)
     return
   }
 
@@ -119,6 +118,10 @@ export class DatabaseService {
       items
     }
     return await this.orderRepository.save(order)
+  }
+  async updateOrder({ id, ...rest }: Order): Promise<Order | null> {
+    await this.orderRepository.update({ id }, rest)
+    return this.orderRepository.findOneBy({ id })
   }
 
   private async calculateOrder(order: Order): Promise<CalculateOrder> {
@@ -166,5 +169,19 @@ export class DatabaseService {
   async updateCheckout({ id, ...rest }: Checkout): Promise<Checkout | null> {
     await this.checkoutRepository.update({ id }, rest)
     return this.checkoutRepository.findOneBy({ id })
+  }
+  async deleteCheckout(id: Checkout['id']): Promise<void> {
+    const ordersWithCheckout = await this.orderRepository.find({
+      where: { checkout: { id } },
+      relations: ['checkout']
+    })
+    console.log('hi', ordersWithCheckout)
+    for (const order of ordersWithCheckout) {
+      order.checkout = null
+      const test = await this.updateOrder(order)
+      console.log(test)
+      await this.orderRepository.save(order)
+    }
+    await this.checkoutRepository.delete(id)
   }
 }

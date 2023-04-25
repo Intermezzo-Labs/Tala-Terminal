@@ -68,7 +68,7 @@ export interface Order {
   id: string
   datetime: Date
   items: OrderItem[]
-  checkout?: Checkout
+  checkout: Checkout | null
 }
 
 export interface Checkout {

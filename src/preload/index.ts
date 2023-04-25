@@ -201,6 +201,17 @@ const api = {
         ipcRenderer.send('create-checkout', input)
       })
     },
+    deleteCheckout: (id: Checkout['id']): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('delete-checkout-response', () => {
+          resolve()
+        })
+        ipcRenderer.once('delete-checkout-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('delete-checkout', id)
+      })
+    },
     createCoinbaseCharge: (orderId: CheckoutInput['orderId']): Promise<CoinbaseChargeResponse> => {
       return new Promise((resolve, reject) => {
         ipcRenderer.once('create-coinbase-charge-response', (_event, checkout) => {

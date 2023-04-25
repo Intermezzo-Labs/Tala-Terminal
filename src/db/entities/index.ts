@@ -181,7 +181,8 @@ export const OrderSchema = new EntitySchema<Order>({
     checkout: {
       type: 'one-to-one',
       target: 'checkout',
-      joinColumn: { name: 'checkout_id' }
+      joinColumn: { name: 'checkout_id' },
+      cascade: ['remove']
     }
   }
 })

@@ -260,3 +260,11 @@ ipcMain.on('create-coinbase-charge', async (event, orderId) => {
     event.reply('create-coinbase-charge-error', error)
   }
 })
+ipcMain.on('delete-checkout', async (event, args) => {
+  try {
+    const item = await dbService.deleteCheckout(args)
+    event.reply('delete-checkout-response', item)
+  } catch (error) {
+    event.reply('delete-checkout-error', error)
+  }
+})
