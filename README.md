@@ -1,6 +1,5 @@
 # Tala-Terminal
-
-An Electron application with Vue and TypeScript
+<img width="1340" alt="image" src="https://user-images.githubusercontent.com/20450617/234158739-4b6def6e-7caf-4299-9d26-de6b564bc886.png">
 
 ## Todo
 
