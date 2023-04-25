@@ -1,6 +1,12 @@
-# electron-vite-pos
+# Tala-Terminal
 
 An Electron application with Vue and TypeScript
+
+## Todo
+
+- Implement global Toast component
+- Add states to Badge component
+- Replace env variables (Coinbase API key) with rows in Setting table.
 
 ## Recommended IDE Setup
 
