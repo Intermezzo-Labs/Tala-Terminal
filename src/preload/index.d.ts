@@ -39,6 +39,7 @@ interface CustomAPI {
   }
   order: {
     getOrders: () => Promise<Order[]>
+    getOrder: (orderId: Order['id']) => Promise<Order | null>
     createOrder: (selectedItems: Record<string, number>) => Promise<Order>
   }
   checkout: {

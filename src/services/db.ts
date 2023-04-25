@@ -103,6 +103,9 @@ export class DatabaseService {
   async getAllOrders(): Promise<Order[]> {
     return this.orderRepository.find({ relations: ['items', 'checkout'] })
   }
+  async getOrderById(id: Order['id']): Promise<Order | null> {
+    return this.orderRepository.findOne({ where: { id }, relations: ['items', 'checkout'] })
+  }
   async createOrder(selectedItems: Record<string, number>): Promise<Order> {
     const inventoryItems = await this.inventoryItemRepository.findBy({
       id: In(Object.keys(selectedItems))

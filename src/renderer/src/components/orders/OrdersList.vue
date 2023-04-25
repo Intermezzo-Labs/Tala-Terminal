@@ -23,14 +23,12 @@
         </td>
         <td class="text-right space-x-2">
           <RouterLink
-            v-if="order.checkout?.status !== CheckoutStatus.PAID"
             :to="{
               name: RouteName.Checkout,
-              params: { orderId: order.id },
-              query: { checkoutId: order.checkout?.id }
+              params: { orderId: order.id }
             }"
           >
-            Checkout
+            {{ order.checkout ? 'Receipt' : 'Checkout' }}
           </RouterLink>
         </td>
       </tr>
@@ -47,7 +45,7 @@
 import { onMounted, ref } from 'vue'
 import AppTable from '../AppTable.vue'
 import { format, isToday } from 'date-fns'
-import { CheckoutStatus, Order } from '@shared/models'
+import { Order } from '@shared/models'
 import { RouteName } from '@renderer/router/routeNames'
 import { checkoutMethods } from '@renderer/utils'
 import AppBadge from '../AppBadge.vue'

@@ -10,8 +10,7 @@ import {
   Checkout,
   CheckoutInput,
   CheckoutPreview,
-  CoinbaseChargeResponse,
-  CheckoutDetails
+  CoinbaseChargeResponse
 } from '../shared/models'
 import { GetAllInventoryCategoriesOptions } from '../services/db'
 
@@ -134,6 +133,17 @@ const api = {
     }
   },
   order: {
+    getOrder: (orderId: Order['id']): Promise<Order | null> => {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.once('get-order-response', (_event, order) => {
+          resolve(order)
+        })
+        ipcRenderer.once('get-order-error', (_event, error) => {
+          reject(error)
+        })
+        ipcRenderer.send('get-order', orderId)
+      })
+    },
     getOrders: (): Promise<Order[]> => {
       return new Promise((resolve, reject) => {
         ipcRenderer.once('get-orders-response', (_event, items) => {
