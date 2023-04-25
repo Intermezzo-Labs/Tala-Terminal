@@ -1,8 +1,9 @@
 {
-  "name": "@intermezzo-labs/tala-terminal",
+  "name": "tala-terminal",
   "version": "1.0.0",
   "description": "An Electron application with Vue and TypeScript",
-  "main": "./out/main/index.js",
+  "main": "build/main/main.js",
+  "author": "Intermezzo Labs",
   "homepage": "https://intermezzo-labs.xyz",
   "scripts": {
     "format": "prettier --write .",
@@ -11,12 +12,12 @@
     "typecheck:web": "vue-tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "start": "electron-vite preview",
-    "dev": "electron-vite dev",
-    "build": "npm run typecheck && electron-vite build",
+    "dev": "node scripts/dev-server.js",
     "postinstall": "electron-builder install-app-deps",
-    "build:win": "npm run build && electron-builder --win --config",
-    "build:mac": "npm run build && electron-builder --mac --config",
-    "build:linux": "npm run build && electron-builder --linux --config"
+    "build": "node scripts/build.js && electron-builder",
+    "build:win": "node scripts/build.js && electron-builder --win",
+    "build:mac": "node scripts/build.js && electron-builder --mac",
+    "build:linux": "node scripts/build.js && electron-builder --linux"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^1.0.3",
@@ -30,6 +31,7 @@
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.14",
     "vite-svg-loader": "^4.0.0",
+    "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
@@ -46,8 +48,10 @@
     "@vue/eslint-config-typescript": "^11.0.2",
     "autoprefixer": "^10.4.14",
     "dotenv": "^16.0.3",
-    "electron": "^22.3.4",
-    "electron-builder": "^23.6.0",
+    "chalk": "^4.1.2",
+    "chokidar": "^3.5.3",
+    "electron": "^24.0.0",
+    "electron-builder": "^24.2.1",
     "electron-vite": "^1.0.21",
     "eslint": "^8.36.0",
     "eslint-plugin-vue": "^9.10.0",
@@ -57,7 +61,6 @@
     "tailwindcss": "^3.3.1",
     "typescript": "^4.9.5",
     "vite": "^4.2.1",
-    "vue": "^3.2.47",
     "vue-tsc": "^1.2.0"
   }
 }

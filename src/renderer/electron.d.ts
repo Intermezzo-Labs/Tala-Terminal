@@ -10,8 +10,8 @@ import {
   CheckoutPreview,
   CoinbaseChargeResponse,
   Checkout
-} from 'src/shared/models'
-import { GetAllInventoryCategoriesOptions } from 'src/services/db'
+} from '../shared/models'
+import { GetAllInventoryCategoriesOptions } from '../services/db'
 
 declare global {
   interface Window {
@@ -20,7 +20,7 @@ declare global {
   }
 }
 
-interface CustomAPI {
+export interface CustomAPI {
   settings: {
     getSettings: () => Promise<Setting[]>
     updateSetting: (key: string, value: string) => Promise<Setting[]>
@@ -49,8 +49,4 @@ interface CustomAPI {
     deleteCheckout: (checkoutId: Checkout['id']) => Promise<void>
     createCoinbaseCharge: (orderId: CheckoutInput['orderId']) => Promise<CoinbaseChargeResponse>
   }
-}
-
-export default {
-  CustomAPI
 }

@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import AppHeader from 'components/AppHeader.vue'
 import AppModals from 'components/AppModals.vue'
-import { useModalsStore } from '@renderer/stores/modals'
+import { useModalsStore } from './stores/modals'
 
 const modalStore = useModalsStore()
 </script>

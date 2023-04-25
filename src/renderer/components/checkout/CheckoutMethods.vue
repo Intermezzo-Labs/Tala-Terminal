@@ -22,9 +22,9 @@
 </template>
 
 <script setup lang="ts">
-import { CheckoutMethod } from '@shared/models'
-import AppIcon from '../AppIcon.vue'
 import { PropType } from 'vue'
+import AppIcon from '../AppIcon.vue'
+import { CheckoutMethod } from '@shared/models'
 import { checkoutMethods } from '@renderer/utils'
 
 defineEmits(['update:modelValue'])
