@@ -175,12 +175,9 @@ export class DatabaseService {
       where: { checkout: { id } },
       relations: ['checkout']
     })
-    console.log('hi', ordersWithCheckout)
     for (const order of ordersWithCheckout) {
       order.checkout = null
-      const test = await this.updateOrder(order)
-      console.log(test)
-      await this.orderRepository.save(order)
+      await this.updateOrder(order)
     }
     await this.checkoutRepository.delete(id)
   }
