@@ -1,19 +1,10 @@
 {
-  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
-  "include": ["electron.vite.config.*", "src/main/**/*", "src/preload/**/*", "src/shared/**/*", "**/*.json", "src/db/**/*", "src/services/**/*"],
   "compilerOptions": {
-    "lib": [
-       "es5",
-       "es6"
-    ],
-    "target": "es5",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "outDir": "./build",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "sourceMap": true,
     "composite": true,
-    "types": ["electron-vite/node"],
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true
   },
+  "include": ["vite.config.ts"]
 }
